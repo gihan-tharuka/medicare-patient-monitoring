@@ -7,7 +7,9 @@ baseURL: API_BASE_URL,
 timeout: 10000,
 headers: {
 'Content-Type': 'application/json',
+'Accept': 'application/json',
 },
+withCredentials: false, // Don't send cookies with cross-origin requests
 });
 
 export const apiService = {
