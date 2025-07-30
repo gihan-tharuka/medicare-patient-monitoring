@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+.card {
+box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+background-color: #fff;
+border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.list-group-item {
+border: none;
+border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.list-group-item:last-child {
+border-bottom: none;
+}
+
+.bg-success {
+background-color: #28a745 !important;
+}
+
+.text-danger {
+color: #dc3545 !important;
+}
+
+.badge {
+font-size: 0.75em;
+}
