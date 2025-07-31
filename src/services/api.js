@@ -47,6 +47,16 @@ throw error;
 }
 },
 
+getPatientTrend: async (patientId) => {
+    try {
+      const response = await api.get(`/patient-trend/${patientId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching patient trend:', error);
+      throw error;
+    }
+  },
+
 // Send test data
 sendTestData: async (patientId, heartRate, oxygenLevel, inactivityMinutes = 0) => {
 const testData = {
