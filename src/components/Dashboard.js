@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
 import PatientCount from './PatientCount';
 import AlertsList from './AlertsList';
-import PatientTrend from './PatientTrend'; // Import the trend component
+import PatientTrend from './PatientTrend';
+import AddPatient from './AddPatient'; // Import the AddPatient component
 import apiService from '../services/api';
 
 const Dashboard = () => {
@@ -49,7 +51,6 @@ const Dashboard = () => {
     } catch (err) {
       console.error('Test data error:', err);
       let errorMessage = 'Failed to send test data';
-
       if (err.response) {
         errorMessage += `: ${err.response.status} - ${err.response.data?.message || err.response.statusText}`;
       } else if (err.request) {
@@ -57,7 +58,6 @@ const Dashboard = () => {
       } else {
         errorMessage += `: ${err.message}`;
       }
-
       alert(errorMessage);
     }
   };
@@ -84,11 +84,18 @@ const Dashboard = () => {
         </div>
       )}
 
+      {/* Add Patient Form at the top */}
+      <div className="row">
+        <div className="col-12">
+          <AddPatient onSuccess={fetchDashboardData} />
+        </div>
+      </div>
+
+      {/* Patient statistics and test data form */}
       <div className="row">
         <div className="col-md-4">
           <PatientCount count={dashboardData.activePatients} loading={loading} />
         </div>
-
         <div className="col-md-8">
           <div className="card mb-4">
             <div className="card-header">
@@ -145,13 +152,14 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Alerts List */}
       <div className="row">
         <div className="col-12">
           <AlertsList alerts={dashboardData.recentAlerts} loading={loading} />
         </div>
       </div>
 
-      {/* Add the PatientTrend component here */}
+      {/* Trends Chart */}
       <div className="row">
         <div className="col-12">
           <PatientTrend />
@@ -160,7 +168,9 @@ const Dashboard = () => {
 
       {dashboardData.lastUpdated && (
         <div className="text-center mt-4">
-          <small className="text-muted">Last updated: {dashboardData.lastUpdated}</small>
+          <small className="text-muted">
+            Last updated: {dashboardData.lastUpdated}
+          </small>
         </div>
       )}
     </div>

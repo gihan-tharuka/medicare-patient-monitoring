@@ -57,6 +57,16 @@ getPatientTrend: async (patientId) => {
     }
   },
 
+  createPatient: async (patientData) => {
+    try {
+      const response = await api.post('/add-patient', patientData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating patient:', error);
+      throw error;
+    }
+  },
+
 // Send test data
 sendTestData: async (patientId, heartRate, oxygenLevel, inactivityMinutes = 0) => {
 const testData = {
