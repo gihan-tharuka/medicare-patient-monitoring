@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
+
 
 const API_BASE_URL = 'https://q0c3ofpp25.execute-api.eu-north-1.amazonaws.com/dev/'; // Replace with your API Gateway URL
 
@@ -57,15 +59,38 @@ getPatientTrend: async (patientId) => {
     }
   },
 
+  // createPatient: async (patientData) => {
+  //   try {
+  //     const response = await api.post('/add-patient', patientData);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error creating patient:', error);
+  //     throw error;
+  //   }
+  // },
   createPatient: async (patientData) => {
-    try {
-      const response = await api.post('/add-patient', patientData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating patient:', error);
-      throw error;
-    }
-  },
+  try {
+    // Get JWT from current session using Amplify v6 syntax
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+
+    // Call API with Authorization header
+    const response = await api.post(
+      '/add-patient',
+      patientData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error creating patient:', error);
+    throw error;
+  }
+},
+
 
 // Send test data
 sendTestData: async (patientId, heartRate, oxygenLevel, inactivityMinutes = 0) => {
