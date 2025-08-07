@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AddPatient from '../components/AddPatient';
+import apiService from '../services/api';
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
@@ -11,18 +12,15 @@ const Patients = () => {
   const fetchPatients = async () => {
     try {
       setLoading(true);
-      // For now, we'll use mock data since we don't have a getPatients API
-      // You can replace this with actual API call when available
-      const mockPatients = [
-        { id: 'P001', name: 'John Doe', age: 45, gender: 'Male', contact: '123-456-7890', status: 'Active' },
-        { id: 'P002', name: 'Jane Smith', age: 32, gender: 'Female', contact: '987-654-3210', status: 'Active' },
-        { id: 'P003', name: 'Bob Johnson', age: 67, gender: 'Male', contact: '555-123-4567', status: 'Inactive' },
-      ];
-      setPatients(mockPatients);
+      const data = await apiService.getAllPatients();
+      console.log('Fetched patients:', data);
+      setPatients(data.patients || data || []);
       setError(null);
     } catch (err) {
       setError('Failed to fetch patients');
       console.error('Patients fetch error:', err);
+      // Fallback to empty array if API fails
+      setPatients([]);
     } finally {
       setLoading(false);
     }
@@ -34,8 +32,9 @@ const Patients = () => {
   };
 
   const filteredPatients = patients.filter(patient =>
-    patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    patient.id.toLowerCase().includes(searchTerm.toLowerCase())
+    (patient.name && patient.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (patient.id && patient.id.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (patient.patientId && patient.patientId.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   useEffect(() => {
@@ -66,6 +65,9 @@ const Patients = () => {
         <div className="alert alert-danger" role="alert">
           <i className="bi bi-exclamation-triangle me-2"></i>
           {error}
+          <div className="mt-2">
+            <small>Please check your internet connection and try again. If the problem persists, contact support.</small>
+          </div>
         </div>
       )}
 
@@ -104,7 +106,7 @@ const Patients = () => {
         <div className="col-md-6">
           <div className="d-flex justify-content-end">
             <span className="badge bg-secondary fs-6">
-              {filteredPatients.length} patient(s) found
+              {filteredPatients.length} of {patients.length} patient(s) found
             </span>
           </div>
         </div>
@@ -155,20 +157,20 @@ const Patients = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredPatients.map((patient) => (
-                        <tr key={patient.id}>
+                      {filteredPatients.map((patient, index) => (
+                        <tr key={patient.id || patient.patientId || index}>
                           <td>
-                            <strong>{patient.id}</strong>
+                            <strong>{patient.id || patient.patientId || 'N/A'}</strong>
                           </td>
-                          <td>{patient.name}</td>
-                          <td>{patient.age}</td>
-                          <td>{patient.gender}</td>
-                          <td>{patient.contact}</td>
+                          <td>{patient.name || 'N/A'}</td>
+                          <td>{patient.age || 'N/A'}</td>
+                          <td>{patient.gender || 'N/A'}</td>
+                          <td>{patient.contact || patient.phoneNumber || 'N/A'}</td>
                           <td>
                             <span className={`badge ${
-                              patient.status === 'Active' ? 'bg-success' : 'bg-secondary'
+                              (patient.status === 'Active' || patient.status === 'active') ? 'bg-success' : 'bg-secondary'
                             }`}>
-                              {patient.status}
+                              {patient.status || 'Unknown'}
                             </span>
                           </td>
                           <td>

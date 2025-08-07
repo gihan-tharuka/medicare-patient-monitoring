@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 
 const API_BASE_URL = 'https://q0c3ofpp25.execute-api.eu-north-1.amazonaws.com/dev/'; // Replace with your API Gateway URL
@@ -87,6 +87,16 @@ getPatientTrend: async (patientId) => {
     return response.data;
   } catch (error) {
     console.error('Error creating patient:', error);
+    throw error;
+  }
+},
+// src/services/api.js
+getAllPatients: async () => {
+  try {
+    const response = await api.get('/list-patients');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching patients:', error);
     throw error;
   }
 },
