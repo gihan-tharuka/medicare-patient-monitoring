@@ -17,46 +17,7 @@ const Alerts = () => {
     } catch (err) {
       setError('Failed to fetch alerts');
       console.error('Alerts fetch error:', err);
-      // Mock data for demonstration
-      const mockAlerts = [
-        {
-          id: 1,
-          patientId: 'P001',
-          alertType: 'High Heart Rate',
-          severity: 'HIGH',
-          message: 'Heart rate of 120 BPM detected',
-          timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-          status: 'active'
-        },
-        {
-          id: 2,
-          patientId: 'P002',
-          alertType: 'Low Oxygen Level',
-          severity: 'HIGH',
-          message: 'Oxygen level dropped to 92%',
-          timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-          status: 'acknowledged'
-        },
-        {
-          id: 3,
-          patientId: 'P001',
-          alertType: 'Inactivity Alert',
-          severity: 'MEDIUM',
-          message: 'Patient inactive for 45 minutes',
-          timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-          status: 'resolved'
-        },
-        {
-          id: 4,
-          patientId: 'P003',
-          alertType: 'Heart Rate Variation',
-          severity: 'LOW',
-          message: 'Unusual heart rate pattern detected',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-          status: 'active'
-        }
-      ];
-      setAlerts(mockAlerts);
+      setAlerts([]);
     } finally {
       setLoading(false);
     }
@@ -83,12 +44,47 @@ const Alerts = () => {
   });
 
   const getAlertCounts = () => {
+    let heartRateCount = 0;
+    let oxygenCount = 0;
+    let inactivityCount = 0;
+
+    alerts.forEach(alert => {
+      // Convert the entire alert object to a searchable string
+      const alertText = JSON.stringify(alert).toLowerCase();
+      
+      // Check for heart rate related alerts in any field
+      if (alertText.includes('heart rate') || 
+          alertText.includes('heart') || 
+          alertText.includes('cardiac') || 
+          alertText.includes('pulse') ||
+          alertText.includes('bpm')) {
+        heartRateCount++;
+      }
+      
+      // Check for oxygen saturation related alerts in any field
+      if (alertText.includes('oxygen') || 
+          alertText.includes('o2') || 
+          alertText.includes('saturation') || 
+          alertText.includes('spo2') ||
+          alertText.includes('breathing')) {
+        oxygenCount++;
+      }
+      
+      // Check for inactivity related alerts in any field
+      if (alertText.includes('inactivity') || 
+          alertText.includes('inactive') || 
+          alertText.includes('movement') || 
+          alertText.includes('activity') ||
+          alertText.includes('motion')) {
+        inactivityCount++;
+      }
+    });
+
     return {
       total: alerts.length,
-      active: alerts.filter(a => a.status === 'active').length,
-      high: alerts.filter(a => a.severity === 'HIGH').length,
-      medium: alerts.filter(a => a.severity === 'MEDIUM').length,
-      low: alerts.filter(a => a.severity === 'LOW').length
+      heartRate: heartRateCount,
+      oxygen: oxygenCount,
+      inactivity: inactivityCount
     };
   };
 
@@ -123,7 +119,7 @@ const Alerts = () => {
 
       {/* Alert Statistics */}
       <div className="row mb-4">
-        <div className="col-xl-2 col-md-6">
+        <div className="col-xl-3 col-md-6">
           <div className="card border-left-primary shadow h-100 py-2">
             <div className="card-body">
               <div className="row no-gutters align-items-center">
@@ -143,80 +139,60 @@ const Alerts = () => {
           </div>
         </div>
 
-        <div className="col-xl-2 col-md-6">
-          <div className="card border-left-warning shadow h-100 py-2">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
-                  <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                    Active
-                  </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {counts.active}
-                  </div>
-                </div>
-                <div className="col-auto">
-                  <i className="bi bi-exclamation-circle text-warning"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-xl-2 col-md-6">
+        <div className="col-xl-3 col-md-6">
           <div className="card border-left-danger shadow h-100 py-2">
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                    High
+                    Critical Heart Rate
                   </div>
                   <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {counts.high}
+                    {counts.heartRate}
                   </div>
                 </div>
                 <div className="col-auto">
-                  <i className="bi bi-exclamation-triangle-fill text-danger"></i>
+                  <i className="bi bi-heart-pulse text-danger"></i>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-2 col-md-6">
+        <div className="col-xl-3 col-md-6">
           <div className="card border-left-warning shadow h-100 py-2">
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                    Medium
+                    Low Oxygen Saturation
                   </div>
                   <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {counts.medium}
+                    {counts.oxygen}
                   </div>
                 </div>
                 <div className="col-auto">
-                  <i className="bi bi-exclamation-triangle text-warning"></i>
+                  <i className="bi bi-lungs text-warning"></i>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-2 col-md-6">
+        <div className="col-xl-3 col-md-6">
           <div className="card border-left-info shadow h-100 py-2">
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
-                    Low
+                    Prolonged Inactivity
                   </div>
                   <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {counts.low}
+                    {counts.inactivity}
                   </div>
                 </div>
                 <div className="col-auto">
-                  <i className="bi bi-info-circle text-info"></i>
+                  <i className="bi bi-person-walking text-info"></i>
                 </div>
               </div>
             </div>
@@ -288,10 +264,8 @@ const Alerts = () => {
                     <thead className="table-light">
                       <tr>
                         <th>Patient ID</th>
-                        <th>Alert Type</th>
                         <th>Message</th>
                         <th>Severity</th>
-                        <th>Status</th>
                         <th>Time</th>
                         <th>Actions</th>
                       </tr>
@@ -300,22 +274,10 @@ const Alerts = () => {
                       {filteredAlerts.map((alert) => (
                         <tr key={alert.id}>
                           <td><strong>{alert.patientId || 'N/A'}</strong></td>
-                          <td>{alert.alertType || 'N/A'}</td>
                           <td>{alert.message || 'N/A'}</td>
                           <td>
-                            <span className={`badge ${
-                              alert.severity === 'HIGH' ? 'bg-danger' : 
-                              alert.severity === 'MEDIUM' ? 'bg-warning' : 'bg-info'
-                            }`}>
-                              {alert.severity || 'UNKNOWN'}
-                            </span>
-                          </td>
-                          <td>
-                            <span className={`badge ${
-                              alert.status === 'active' ? 'bg-danger' :
-                              alert.status === 'acknowledged' ? 'bg-warning' : 'bg-success'
-                            }`}>
-                              {(alert.status || 'unknown').toUpperCase()}
+                            <span className="badge bg-danger">
+                              CRITICAL
                             </span>
                           </td>
                           <td>{alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}</td>
