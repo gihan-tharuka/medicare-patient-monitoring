@@ -7,6 +7,7 @@ const Alerts = () => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all'); // all, high, medium, low
   const [searchTerm, setSearchTerm] = useState('');
+  const [downloadPatientId, setDownloadPatientId] = useState('all');
 
   const fetchAlerts = async () => {
     try {
@@ -33,6 +34,48 @@ const Alerts = () => {
     setAlerts(prev => prev.map(alert => 
       alert.id === alertId ? { ...alert, status: 'resolved' } : alert
     ));
+  };
+
+  const downloadAlerts = () => {
+    let alertsToDownload = alerts;
+    
+    // Filter by patient if specific patient selected
+    if (downloadPatientId !== 'all') {
+      alertsToDownload = alerts.filter(alert => alert.patientId === downloadPatientId);
+    }
+
+    // Prepare CSV data
+    const csvHeaders = ['Patient ID', 'Message', 'Severity', 'Time'];
+    const csvData = alertsToDownload.map(alert => [
+      alert.patientId || 'N/A',
+      `"${(alert.message || 'N/A').replace(/"/g, '""')}"`, // Escape quotes in message
+      'CRITICAL',
+      alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'
+    ]);
+
+    // Create CSV content
+    const csvContent = [csvHeaders.join(','), ...csvData.map(row => row.join(','))].join('\n');
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    
+    const fileName = downloadPatientId === 'all' 
+      ? `all_alerts_${new Date().toISOString().split('T')[0]}.csv`
+      : `patient_${downloadPatientId}_alerts_${new Date().toISOString().split('T')[0]}.csv`;
+    
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const getUniquePatientIds = () => {
+    const patientIds = [...new Set(alerts.map(alert => alert.patientId).filter(id => id))];
+    return patientIds.sort();
   };
 
   const filteredAlerts = alerts.filter(alert => {
@@ -103,6 +146,30 @@ const Alerts = () => {
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 className="h2">Alert Management</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
+          <div className="btn-group me-2">
+            <select 
+              className="form-select me-4"
+              value={downloadPatientId}
+              onChange={(e) => setDownloadPatientId(e.target.value)}
+              style={{ minWidth: '150px' }}
+            >
+              <option value="all">All Patients</option>
+              {getUniquePatientIds().map(patientId => (
+                <option key={patientId} value={patientId}>
+                  Patient {patientId}
+                </option>
+              ))}
+            </select>
+            <button 
+              className="btn btn-success me-2"
+              onClick={downloadAlerts}
+              disabled={alerts.length === 0}
+              title="Download Alerts"
+            >
+              <i className="bi bi-download me-1"></i>
+              Download
+            </button>
+          </div>
           <button className="btn btn-outline-secondary" onClick={fetchAlerts}>
             <i className="bi bi-arrow-clockwise me-1"></i>
             Refresh
