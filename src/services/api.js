@@ -112,6 +112,17 @@ updatePatient: async (patientId, updates) => {
     throw error;
   }
 },
+// src/services/api.js
+deletePatient: async (patientId) => {
+  try {
+    const response = await api.delete('/delete-patient', { data: { patientId } });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting patient:', error);
+    throw error;
+  }
+},
+
 
 // Send test data
 sendTestData: async (patientId, heartRate, oxygenLevel, inactivityMinutes = 0) => {

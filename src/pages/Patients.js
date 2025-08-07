@@ -10,6 +10,7 @@ const Patients = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingPatient, setEditingPatient] = useState(null);
+  const [deletingPatient, setDeletingPatient] = useState(null);
   const [editForm, setEditForm] = useState({
     name: '',
     age: '',
@@ -100,6 +101,38 @@ const Patients = () => {
     }
   };
 
+  const handleDeletePatient = (patient) => {
+    setDeletingPatient(patient);
+    setSuccess(null); // Clear any success messages
+    setError(null); // Clear any error messages
+  };
+
+  const confirmDeletePatient = async () => {
+    try {
+      setLoading(true);
+      const patientId = deletingPatient.id || deletingPatient.patientId;
+      
+      await apiService.deletePatient(patientId);
+
+      setError(null);
+      setSuccess(`Patient "${deletingPatient.name}" deleted successfully!`);
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccess(null), 5000);
+      setDeletingPatient(null);
+      fetchPatients(); // Refresh the list
+    } catch (err) {
+      setError('Failed to delete patient');
+      setSuccess(null);
+      console.error('Patient delete error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelDeletePatient = () => {
+    setDeletingPatient(null);
+  };
+
   const filteredPatients = patients.filter(patient =>
     (patient.name && patient.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (patient.id && patient.id.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -121,6 +154,7 @@ const Patients = () => {
             onClick={() => {
               setShowAddForm(!showAddForm);
               if (editingPatient) handleCancelEdit(); // Close edit form if open
+              if (deletingPatient) setDeletingPatient(null); // Close delete modal if open
               setSuccess(null); // Clear success messages
               setError(null); // Clear error messages
             }}
@@ -132,6 +166,7 @@ const Patients = () => {
             className="btn btn-outline-secondary" 
             onClick={() => {
               fetchPatients();
+              if (deletingPatient) setDeletingPatient(null); // Close delete modal if open
               setSuccess(null); // Clear success messages
               setError(null); // Clear error messages
             }}
@@ -162,6 +197,73 @@ const Patients = () => {
             onClick={() => setSuccess(null)}
             aria-label="Close"
           ></button>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingPatient && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title">
+                  <i className="bi bi-exclamation-triangle me-2"></i>
+                  Confirm Delete Patient
+                </h5>
+              </div>
+              <div className="modal-body">
+                <p className="mb-3">
+                  Are you sure you want to delete this patient? This action cannot be undone.
+                </p>
+                <div className="card bg-light">
+                  <div className="card-body">
+                    <h6 className="card-title">Patient Details:</h6>
+                    <p className="card-text mb-1">
+                      <strong>ID:</strong> {deletingPatient.id || deletingPatient.patientId}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Name:</strong> {deletingPatient.name}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Age:</strong> {deletingPatient.age}
+                    </p>
+                    <p className="card-text mb-0">
+                      <strong>Contact:</strong> {deletingPatient.contact || deletingPatient.phoneNumber}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary"
+                  onClick={cancelDeletePatient}
+                  disabled={loading}
+                >
+                  <i className="bi bi-x-lg me-2"></i>
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-danger"
+                  onClick={confirmDeletePatient}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-trash me-2"></i>
+                      Delete Patient
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -386,7 +488,12 @@ const Patients = () => {
                               >
                                 <i className="bi bi-pencil"></i>
                               </button>
-                              <button className="btn btn-outline-danger" title="Delete Patient">
+                              <button 
+                                className="btn btn-outline-danger" 
+                                title="Delete Patient"
+                                onClick={() => handleDeletePatient(patient)}
+                                disabled={loading}
+                              >
                                 <i className="bi bi-trash"></i>
                               </button>
                             </div>
