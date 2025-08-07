@@ -454,7 +454,6 @@ const Patients = () => {
                         <th>Age</th>
                         <th>Gender</th>
                         <th>Contact</th>
-                        <th>Status</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -469,17 +468,7 @@ const Patients = () => {
                           <td>{patient.gender || 'N/A'}</td>
                           <td>{patient.contact || patient.phoneNumber || 'N/A'}</td>
                           <td>
-                            <span className={`badge ${
-                              (patient.status === 'Active' || patient.status === 'active') ? 'bg-success' : 'bg-secondary'
-                            }`}>
-                              {patient.status || 'Unknown'}
-                            </span>
-                          </td>
-                          <td>
                             <div className="btn-group btn-group-sm" role="group">
-                              <button className="btn btn-outline-primary" title="View Details">
-                                <i className="bi bi-eye"></i>
-                              </button>
                               <button 
                                 className="btn btn-outline-secondary" 
                                 title="Edit Patient"
