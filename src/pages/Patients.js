@@ -6,8 +6,16 @@ const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingPatient, setEditingPatient] = useState(null);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    contact: ''
+  });
 
   const fetchPatients = async () => {
     try {
@@ -28,7 +36,68 @@ const Patients = () => {
 
   const handlePatientAdded = () => {
     setShowAddForm(false);
+    setSuccess('Patient added successfully!');
+    setError(null);
+    // Clear success message after 5 seconds
+    setTimeout(() => setSuccess(null), 5000);
     fetchPatients(); // Refresh the list
+  };
+
+  const handleEditPatient = (patient) => {
+    setEditingPatient(patient);
+    setEditForm({
+      name: patient.name || '',
+      age: patient.age || '',
+      gender: patient.gender || '',
+      contact: patient.contact || patient.phoneNumber || ''
+    });
+    setShowAddForm(false); // Close add form if open
+    setSuccess(null); // Clear any success messages
+    setError(null); // Clear any error messages
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPatient(null);
+    setEditForm({
+      name: '',
+      age: '',
+      gender: '',
+      contact: ''
+    });
+  };
+
+  const handleEditFormChange = (field, value) => {
+    setEditForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleUpdatePatient = async () => {
+    try {
+      setLoading(true);
+      const patientId = editingPatient.id || editingPatient.patientId;
+      
+      await apiService.updatePatient(patientId, {
+        name: editForm.name,
+        age: parseInt(editForm.age, 10),
+        gender: editForm.gender,
+        contact: editForm.contact
+      });
+
+      setError(null);
+      setSuccess(`Patient "${editForm.name}" updated successfully!`);
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccess(null), 5000);
+      handleCancelEdit();
+      fetchPatients(); // Refresh the list
+    } catch (err) {
+      setError('Failed to update patient');
+      setSuccess(null);
+      console.error('Patient update error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filteredPatients = patients.filter(patient =>
@@ -49,12 +118,24 @@ const Patients = () => {
         <div className="btn-toolbar mb-2 mb-md-0">
           <button 
             className="btn btn-primary me-2" 
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => {
+              setShowAddForm(!showAddForm);
+              if (editingPatient) handleCancelEdit(); // Close edit form if open
+              setSuccess(null); // Clear success messages
+              setError(null); // Clear error messages
+            }}
           >
             <i className="bi bi-person-plus me-1"></i>
             {showAddForm ? 'Cancel' : 'Add Patient'}
           </button>
-          <button className="btn btn-outline-secondary" onClick={fetchPatients}>
+          <button 
+            className="btn btn-outline-secondary" 
+            onClick={() => {
+              fetchPatients();
+              setSuccess(null); // Clear success messages
+              setError(null); // Clear error messages
+            }}
+          >
             <i className="bi bi-arrow-clockwise me-1"></i>
             Refresh
           </button>
@@ -67,6 +148,125 @@ const Patients = () => {
           {error}
           <div className="mt-2">
             <small>Please check your internet connection and try again. If the problem persists, contact support.</small>
+          </div>
+        </div>
+      )}
+
+      {success && (
+        <div className="alert alert-success alert-dismissible fade show" role="alert">
+          <i className="bi bi-check-circle me-2"></i>
+          {success}
+          <button 
+            type="button" 
+            className="btn-close" 
+            onClick={() => setSuccess(null)}
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
+
+      {/* Edit Patient Form */}
+      {editingPatient && (
+        <div className="row mb-4">
+          <div className="col-12">
+            <div className="card border-warning">
+              <div className="card-header bg-warning text-dark">
+                <h5 className="mb-0">
+                  <i className="bi bi-pencil me-2"></i>
+                  Edit Patient: {editingPatient.name}
+                </h5>
+              </div>
+              <div className="card-body">
+                <form onSubmit={(e) => { e.preventDefault(); handleUpdatePatient(); }}>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">Name *</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editForm.name}
+                          onChange={(e) => handleEditFormChange('name', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">Age *</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={editForm.age}
+                          onChange={(e) => handleEditFormChange('age', e.target.value)}
+                          min="1"
+                          max="120"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">Gender *</label>
+                        <select
+                          className="form-select"
+                          value={editForm.gender}
+                          onChange={(e) => handleEditFormChange('gender', e.target.value)}
+                          required
+                        >
+                          <option value="">Select Gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="form-label">Contact *</label>
+                        <input
+                          type="tel"
+                          className="form-control"
+                          value={editForm.contact}
+                          onChange={(e) => handleEditFormChange('contact', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <button 
+                      type="submit" 
+                      className="btn btn-warning"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-check-lg me-2"></i>
+                          Update Patient
+                        </>
+                      )}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary"
+                      onClick={handleCancelEdit}
+                      disabled={loading}
+                    >
+                      <i className="bi bi-x-lg me-2"></i>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -178,7 +378,12 @@ const Patients = () => {
                               <button className="btn btn-outline-primary" title="View Details">
                                 <i className="bi bi-eye"></i>
                               </button>
-                              <button className="btn btn-outline-secondary" title="Edit Patient">
+                              <button 
+                                className="btn btn-outline-secondary" 
+                                title="Edit Patient"
+                                onClick={() => handleEditPatient(patient)}
+                                disabled={loading}
+                              >
                                 <i className="bi bi-pencil"></i>
                               </button>
                               <button className="btn btn-outline-danger" title="Delete Patient">

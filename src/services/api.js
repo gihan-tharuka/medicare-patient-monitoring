@@ -101,6 +101,17 @@ getAllPatients: async () => {
   }
 },
 
+// src/services/api.js
+updatePatient: async (patientId, updates) => {
+  try {
+    // Optionally: add token authorization header if route is protected
+    const response = await api.put('/update-patient', { patientId, ...updates });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating patient:', error);
+    throw error;
+  }
+},
 
 // Send test data
 sendTestData: async (patientId, heartRate, oxygenLevel, inactivityMinutes = 0) => {
