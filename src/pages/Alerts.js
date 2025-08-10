@@ -25,20 +25,20 @@ const Alerts = () => {
   };
 
   const acknowledgeAlert = (alertId) => {
-    setAlerts(prev => prev.map(alert => 
+    setAlerts(prev => prev.map(alert =>
       alert.id === alertId ? { ...alert, status: 'acknowledged' } : alert
     ));
   };
 
   const resolveAlert = (alertId) => {
-    setAlerts(prev => prev.map(alert => 
+    setAlerts(prev => prev.map(alert =>
       alert.id === alertId ? { ...alert, status: 'resolved' } : alert
     ));
   };
 
   const downloadAlerts = () => {
     let alertsToDownload = alerts;
-    
+
     // Filter by patient if specific patient selected
     if (downloadPatientId !== 'all') {
       alertsToDownload = alerts.filter(alert => alert.patientId === downloadPatientId);
@@ -50,22 +50,25 @@ const Alerts = () => {
       alert.patientId || 'N/A',
       `"${(alert.message || 'N/A').replace(/"/g, '""')}"`, // Escape quotes in message
       'CRITICAL',
-      alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'
+      alert.timestamp ? new Date(alert.timestamp * 1000).toLocaleString() : 'N/A' // FIXED HERE
     ]);
 
     // Create CSV content
-    const csvContent = [csvHeaders.join(','), ...csvData.map(row => row.join(','))].join('\n');
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
 
     // Create and download file
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    
-    const fileName = downloadPatientId === 'all' 
+
+    const fileName = downloadPatientId === 'all'
       ? `all_alerts_${new Date().toISOString().split('T')[0]}.csv`
       : `patient_${downloadPatientId}_alerts_${new Date().toISOString().split('T')[0]}.csv`;
-    
+
     link.setAttribute('download', fileName);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
@@ -81,8 +84,8 @@ const Alerts = () => {
   const filteredAlerts = alerts.filter(alert => {
     const matchesFilter = filter === 'all' || (alert.severity && alert.severity.toLowerCase() === filter.toLowerCase());
     const matchesSearch = (alert.patientId && alert.patientId.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         (alert.alertType && alert.alertType.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         (alert.message && alert.message.toLowerCase().includes(searchTerm.toLowerCase()));
+      (alert.alertType && alert.alertType.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (alert.message && alert.message.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesFilter && matchesSearch;
   });
 
@@ -92,33 +95,32 @@ const Alerts = () => {
     let inactivityCount = 0;
 
     alerts.forEach(alert => {
-      // Convert the entire alert object to a searchable string
       const alertText = JSON.stringify(alert).toLowerCase();
-      
-      // Check for heart rate related alerts in any field
-      if (alertText.includes('heart rate') || 
-          alertText.includes('heart') || 
-          alertText.includes('cardiac') || 
-          alertText.includes('pulse') ||
-          alertText.includes('bpm')) {
+      if (
+        alertText.includes('heart rate') ||
+        alertText.includes('heart') ||
+        alertText.includes('cardiac') ||
+        alertText.includes('pulse') ||
+        alertText.includes('bpm')
+      ) {
         heartRateCount++;
       }
-      
-      // Check for oxygen saturation related alerts in any field
-      if (alertText.includes('oxygen') || 
-          alertText.includes('o2') || 
-          alertText.includes('saturation') || 
-          alertText.includes('spo2') ||
-          alertText.includes('breathing')) {
+      if (
+        alertText.includes('oxygen') ||
+        alertText.includes('o2') ||
+        alertText.includes('saturation') ||
+        alertText.includes('spo2') ||
+        alertText.includes('breathing')
+      ) {
         oxygenCount++;
       }
-      
-      // Check for inactivity related alerts in any field
-      if (alertText.includes('inactivity') || 
-          alertText.includes('inactive') || 
-          alertText.includes('movement') || 
-          alertText.includes('activity') ||
-          alertText.includes('motion')) {
+      if (
+        alertText.includes('inactivity') ||
+        alertText.includes('inactive') ||
+        alertText.includes('movement') ||
+        alertText.includes('activity') ||
+        alertText.includes('motion')
+      ) {
         inactivityCount++;
       }
     });
@@ -147,7 +149,7 @@ const Alerts = () => {
         <h1 className="h2">Alert Management</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <div className="btn-group me-2">
-            <select 
+            <select
               className="form-select me-4"
               value={downloadPatientId}
               onChange={(e) => setDownloadPatientId(e.target.value)}
@@ -160,7 +162,7 @@ const Alerts = () => {
                 </option>
               ))}
             </select>
-            <button 
+            <button
               className="btn btn-success me-2"
               onClick={downloadAlerts}
               disabled={alerts.length === 0}
@@ -286,7 +288,7 @@ const Alerts = () => {
         <div className="col-md-6">
           <div className="d-flex justify-content-end align-items-center">
             <label className="me-2">Filter by severity:</label>
-            <select 
+            <select
               className="form-select w-auto"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
@@ -339,7 +341,7 @@ const Alerts = () => {
                     </thead>
                     <tbody>
                       {filteredAlerts.map((alert) => (
-                        <tr key={alert.id}>
+                        <tr key={alert.id || alert.alertId}>
                           <td><strong>{alert.patientId || 'N/A'}</strong></td>
                           <td>{alert.message || 'N/A'}</td>
                           <td>
@@ -347,11 +349,12 @@ const Alerts = () => {
                               CRITICAL
                             </span>
                           </td>
-                          <td>{alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}</td>
+                          {/* ---- Timestamp fix here: ---- */}
+                          <td>{alert.timestamp ? new Date(alert.timestamp * 1000).toLocaleString() : 'N/A'}</td>
                           <td>
                             <div className="btn-group btn-group-sm" role="group">
                               {alert.status === 'active' && (
-                                <button 
+                                <button
                                   className="btn btn-outline-warning"
                                   onClick={() => acknowledgeAlert(alert.id)}
                                   title="Acknowledge Alert"
@@ -360,7 +363,7 @@ const Alerts = () => {
                                 </button>
                               )}
                               {alert.status !== 'resolved' && (
-                                <button 
+                                <button
                                   className="btn btn-outline-success"
                                   onClick={() => resolveAlert(alert.id)}
                                   title="Resolve Alert"
