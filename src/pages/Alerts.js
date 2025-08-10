@@ -8,6 +8,8 @@ const Alerts = () => {
   const [filter, setFilter] = useState('all'); // all, high, medium, low
   const [searchTerm, setSearchTerm] = useState('');
   const [downloadPatientId, setDownloadPatientId] = useState('all');
+  const [downloadTimeRange, setDownloadTimeRange] = useState('all');
+  const [displayTimeRange, setDisplayTimeRange] = useState('all');
 
   const fetchAlerts = async () => {
     try {
@@ -36,13 +38,46 @@ const Alerts = () => {
     ));
   };
 
+  const filterAlertsByTimeRange = (alerts, timeRange) => {
+    if (timeRange === 'all') return alerts;
+    
+    const now = new Date();
+    let cutoffDate;
+    
+    switch (timeRange) {
+      case '24h':
+        cutoffDate = new Date(now - 24 * 60 * 60 * 1000);
+        break;
+      case '1week':
+        cutoffDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '1month':
+        cutoffDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
+        break;
+      case '1year':
+        cutoffDate = new Date(now - 365 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        return alerts;
+    }
+    
+    return alerts.filter(alert => {
+      if (!alert.timestamp) return false;
+      const alertDate = new Date(alert.timestamp * 1000);
+      return alertDate >= cutoffDate;
+    });
+  };
+
   const downloadAlerts = () => {
     let alertsToDownload = alerts;
 
     // Filter by patient if specific patient selected
     if (downloadPatientId !== 'all') {
-      alertsToDownload = alerts.filter(alert => alert.patientId === downloadPatientId);
+      alertsToDownload = alertsToDownload.filter(alert => alert.patientId === downloadPatientId);
     }
+
+    // Filter by time range
+    alertsToDownload = filterAlertsByTimeRange(alertsToDownload, downloadTimeRange);
 
     // Prepare CSV data
     const csvHeaders = ['Patient ID', 'Message', 'Severity', 'Time'];
@@ -65,9 +100,9 @@ const Alerts = () => {
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
 
-    const fileName = downloadPatientId === 'all'
-      ? `all_alerts_${new Date().toISOString().split('T')[0]}.csv`
-      : `patient_${downloadPatientId}_alerts_${new Date().toISOString().split('T')[0]}.csv`;
+    const timeRangeText = downloadTimeRange === 'all' ? 'all_time' : downloadTimeRange;
+    const patientText = downloadPatientId === 'all' ? 'all_patients' : `patient_${downloadPatientId}`;
+    const fileName = `${patientText}_alerts_${timeRangeText}_${new Date().toISOString().split('T')[0]}.csv`;
 
     link.setAttribute('download', fileName);
     link.style.visibility = 'hidden';
@@ -81,12 +116,31 @@ const Alerts = () => {
     return patientIds.sort();
   };
 
+  const getFilteredAlertsCount = () => {
+    let alertsToCount = alerts;
+    
+    // Filter by patient if specific patient selected
+    if (downloadPatientId !== 'all') {
+      alertsToCount = alertsToCount.filter(alert => alert.patientId === downloadPatientId);
+    }
+    
+    // Filter by time range
+    alertsToCount = filterAlertsByTimeRange(alertsToCount, downloadTimeRange);
+    
+    return alertsToCount.length;
+  };
+
   const filteredAlerts = alerts.filter(alert => {
     const matchesFilter = filter === 'all' || (alert.severity && alert.severity.toLowerCase() === filter.toLowerCase());
     const matchesSearch = (alert.patientId && alert.patientId.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (alert.alertType && alert.alertType.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (alert.message && alert.message.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesFilter && matchesSearch;
+    
+    // Apply time range filter
+    const timeFilteredAlerts = filterAlertsByTimeRange([alert], displayTimeRange);
+    const matchesTimeRange = timeFilteredAlerts.length > 0;
+    
+    return matchesFilter && matchesSearch && matchesTimeRange;
   });
 
   const getAlertCounts = () => {
@@ -150,10 +204,10 @@ const Alerts = () => {
         <div className="btn-toolbar mb-2 mb-md-0">
           <div className="btn-group me-2">
             <select
-              className="form-select me-4"
+              className="form-select form-select-sm me-2"
               value={downloadPatientId}
               onChange={(e) => setDownloadPatientId(e.target.value)}
-              style={{ minWidth: '150px' }}
+              style={{ minWidth: '120px' }}
             >
               <option value="all">All Patients</option>
               {getUniquePatientIds().map(patientId => (
@@ -162,17 +216,29 @@ const Alerts = () => {
                 </option>
               ))}
             </select>
+            <select
+              className="form-select form-select-sm me-2"
+              value={downloadTimeRange}
+              onChange={(e) => setDownloadTimeRange(e.target.value)}
+              style={{ minWidth: '110px' }}
+            >
+              <option value="all">All Time</option>
+              <option value="24h">Past 24 Hours</option>
+              <option value="1week">Past Week</option>
+              <option value="1month">Past Month</option>
+              <option value="1year">Past Year</option>
+            </select>
             <button
-              className="btn btn-success me-2"
+              className="btn btn-success btn-sm me-2"
               onClick={downloadAlerts}
-              disabled={alerts.length === 0}
-              title="Download Alerts"
+              disabled={alerts.length === 0 || getFilteredAlertsCount() === 0}
+              title={`Download ${getFilteredAlertsCount()} alerts`}
             >
               <i className="bi bi-download me-1"></i>
-              Download
+              Download ({getFilteredAlertsCount()})
             </button>
           </div>
-          <button className="btn btn-outline-secondary" onClick={fetchAlerts}>
+          <button className="btn-sm btn-outline-secondary" onClick={fetchAlerts}>
             <i className="bi bi-arrow-clockwise me-1"></i>
             Refresh
           </button>
@@ -271,7 +337,7 @@ const Alerts = () => {
 
       {/* Filters and Search */}
       <div className="row mb-3">
-        <div className="col-md-6">
+        <div className="col-md-4">
           <div className="input-group">
             <span className="input-group-text">
               <i className="bi bi-search"></i>
@@ -285,9 +351,9 @@ const Alerts = () => {
             />
           </div>
         </div>
-        <div className="col-md-6">
-          <div className="d-flex justify-content-end align-items-center">
-            <label className="me-2">Filter by severity:</label>
+        <div className="col-md-4">
+          <div className="d-flex justify-content-center align-items-center">
+            <label className="me-2">Severity:</label>
             <select
               className="form-select w-auto"
               value={filter}
@@ -297,6 +363,22 @@ const Alerts = () => {
               <option value="high">High Priority</option>
               <option value="medium">Medium Priority</option>
               <option value="low">Low Priority</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="d-flex justify-content-end align-items-center">
+            <label className="me-2">Time Range:</label>
+            <select
+              className="form-select w-auto"
+              value={displayTimeRange}
+              onChange={(e) => setDisplayTimeRange(e.target.value)}
+            >
+              <option value="all">All Time</option>
+              <option value="24h">Past 24 Hours</option>
+              <option value="1week">Past Week</option>
+              <option value="1month">Past Month</option>
+              <option value="1year">Past Year</option>
             </select>
           </div>
         </div>
