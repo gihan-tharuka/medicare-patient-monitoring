@@ -1,0 +1,23 @@
+:root {
+  /* Primary brand color */
+  --amplify-primary-color: #0066cc;
+
+  /* Button colors */
+  --amplify-button-primary-background-color: #0066cc;
+  --amplify-button-primary-color: white;
+
+  /* Input fields */
+  --amplify-input-border-color: #ccc;
+  --amplify-input-border-radius: 6px;
+
+  /* Fonts */
+  --amplify-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Header */
+  --amplify-heading-color: #004080;
+
+  /* Add more variables as you like */
+
+  /* Example: override error color */
+  --amplify-error-color: #cc0000;
+}
