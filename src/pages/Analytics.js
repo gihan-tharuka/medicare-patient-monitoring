@@ -8,9 +8,13 @@ const Analytics = () => {
   const [patientId, setPatientId] = useState('');
   const [showCharts, setShowCharts] = useState(false);
   const [allPatientData, setAllPatientData] = useState([]);
+  const [filteredPatientData, setFilteredPatientData] = useState([]);
   const [loadingPatientData, setLoadingPatientData] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [filterPatientId, setFilterPatientId] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const heartRateChartRef = useRef(null);
   const oxygenChartRef = useRef(null);
 
@@ -26,12 +30,62 @@ const Analytics = () => {
       // Assuming the response has a data array or is directly an array
       const data = Array.isArray(response) ? response : response.data || response.items || [];
       setAllPatientData(data);
+      setFilteredPatientData(data); // Initialize filtered data
     } catch (error) {
       console.error('Error fetching all patient data:', error);
       setAllPatientData([]);
+      setFilteredPatientData([]);
     } finally {
       setLoadingPatientData(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allPatientData];
+
+    // Filter by patient ID
+    if (filterPatientId.trim()) {
+      filtered = filtered.filter(record => 
+        record.patientId && 
+        record.patientId.toLowerCase().includes(filterPatientId.toLowerCase())
+      );
+    }
+
+    // Filter by date range
+    if (startDate || endDate) {
+      filtered = filtered.filter(record => {
+        if (!record.timestamp) return false;
+        
+        const recordDate = new Date(record.timestamp * 1000);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate + 'T23:59:59') : null; // Include end of day
+        
+        if (start && end) {
+          return recordDate >= start && recordDate <= end;
+        } else if (start) {
+          return recordDate >= start;
+        } else if (end) {
+          return recordDate <= end;
+        }
+        return true;
+      });
+    }
+
+    setFilteredPatientData(filtered);
+    setCurrentPage(1); // Reset to first page when filters are applied
+  };
+
+  const clearFilters = () => {
+    setFilterPatientId('');
+    setStartDate('');
+    setEndDate('');
+    setFilteredPatientData(allPatientData);
+    setCurrentPage(1);
+  };
+
+  const getUniquePatientIds = () => {
+    const uniqueIds = [...new Set(allPatientData.map(record => record.patientId))];
+    return uniqueIds.filter(id => id); // Remove any null/undefined values
   };
 
   const handleShowTrends = () => {
@@ -139,6 +193,13 @@ const Analytics = () => {
     fetchAnalyticsData();
     fetchAllPatientData();
   }, []);
+
+  // Apply filters whenever filter values change
+  useEffect(() => {
+    if (allPatientData.length > 0) {
+      applyFilters();
+    }
+  }, [filterPatientId, startDate, endDate, allPatientData]);
 
   return (
     <div>
@@ -258,6 +319,60 @@ const Analytics = () => {
                 )}
               </button>
             </div>
+            
+            {/* Filter Section */}
+            <div className="card-body border-bottom">
+              <div className="row g-3 align-items-end">
+                <div className="col-md-3">
+                  <label className="form-label">Filter by Patient ID</label>
+                  <select
+                    className="form-select"
+                    value={filterPatientId}
+                    onChange={(e) => setFilterPatientId(e.target.value)}
+                  >
+                    <option value="">All Patients</option>
+                    {getUniquePatientIds().map(id => (
+                      <option key={id} value={id}>{id}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="col-md-3">
+                  <label className="form-label">Start Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+                
+                <div className="col-md-3">
+                  <label className="form-label">End Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+                
+                <div className="col-md-3">
+                  <div className="d-flex gap-2">
+                    <button 
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={clearFilters}
+                    >
+                      <i className="bi bi-x-circle me-1"></i>
+                      Clear Filters
+                    </button>
+                    <div className="text-muted small align-self-center ms-2">
+                      {filteredPatientData.length} of {allPatientData.length} records
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="card-body">
               {loadingPatientData ? (
                 <div className="text-center py-4">
@@ -266,7 +381,7 @@ const Analytics = () => {
                   </div>
                   <p className="mt-2 text-muted">Loading patient data...</p>
                 </div>
-              ) : allPatientData.length > 0 ? (
+              ) : filteredPatientData.length > 0 ? (
                 <>
                   <div className="table-responsive">
                     <table className="table table-striped table-hover">
@@ -281,7 +396,7 @@ const Analytics = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {allPatientData
+                        {filteredPatientData
                           .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                           .map((record, index) => {
                             const heartRate = record.heartRate;
@@ -346,11 +461,11 @@ const Analytics = () => {
                   </div>
                   
                   {/* Pagination */}
-                  {allPatientData.length > itemsPerPage && (
+                  {filteredPatientData.length > itemsPerPage && (
                     <nav className="mt-3">
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="text-muted">
-                          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, allPatientData.length)} of {allPatientData.length} records
+                          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredPatientData.length)} of {filteredPatientData.length} records
                         </div>
                         <ul className="pagination pagination-sm mb-0">
                           <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
@@ -362,7 +477,7 @@ const Analytics = () => {
                               Previous
                             </button>
                           </li>
-                          {[...Array(Math.ceil(allPatientData.length / itemsPerPage))].map((_, i) => (
+                          {[...Array(Math.ceil(filteredPatientData.length / itemsPerPage))].map((_, i) => (
                             <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
                               <button 
                                 className="page-link" 
@@ -372,11 +487,11 @@ const Analytics = () => {
                               </button>
                             </li>
                           ))}
-                          <li className={`page-item ${currentPage === Math.ceil(allPatientData.length / itemsPerPage) ? 'disabled' : ''}`}>
+                          <li className={`page-item ${currentPage === Math.ceil(filteredPatientData.length / itemsPerPage) ? 'disabled' : ''}`}>
                             <button 
                               className="page-link" 
                               onClick={() => setCurrentPage(currentPage + 1)}
-                              disabled={currentPage === Math.ceil(allPatientData.length / itemsPerPage)}
+                              disabled={currentPage === Math.ceil(filteredPatientData.length / itemsPerPage)}
                             >
                               Next
                             </button>
@@ -389,8 +504,24 @@ const Analytics = () => {
               ) : (
                 <div className="text-center text-muted py-4">
                   <i className="bi bi-inbox" style={{ fontSize: '3rem', opacity: 0.3 }}></i>
-                  <h5 className="mt-3">No Patient Data Available</h5>
-                  <p>No patient telemetry data has been recorded yet.</p>
+                  <h5 className="mt-3">
+                    {allPatientData.length === 0 ? 'No Patient Data Available' : 'No Data Found'}
+                  </h5>
+                  <p>
+                    {allPatientData.length === 0 
+                      ? 'No patient telemetry data has been recorded yet.'
+                      : 'No data matches the current filter criteria. Try adjusting your filters.'
+                    }
+                  </p>
+                  {allPatientData.length > 0 && (
+                    <button 
+                      className="btn btn-outline-primary btn-sm mt-2"
+                      onClick={clearFilters}
+                    >
+                      <i className="bi bi-x-circle me-1"></i>
+                      Clear All Filters
+                    </button>
+                  )}
                 </div>
               )}
             </div>
