@@ -88,6 +88,95 @@ const Analytics = () => {
     return uniqueIds.filter(id => id); // Remove any null/undefined values
   };
 
+  const downloadFilteredData = () => {
+    if (filteredPatientData.length === 0) {
+      alert('No data available to download');
+      return;
+    }
+
+    try {
+      // Create CSV headers
+      const headers = [
+        'Patient ID',
+        'Timestamp',
+        'Date & Time',
+        'Heart Rate (BPM)',
+        'Oxygen Level (%)',
+        'Inactivity (min)',
+        'Status'
+      ];
+
+      // Convert data to CSV format
+      const csvData = filteredPatientData.map(record => {
+        const heartRate = record.heartRate || '';
+        const oxygenLevel = record.oxygenLevel || '';
+        const inactivity = record.inactivityMinutes || 0;
+        
+        // Determine status based on critical conditions
+        let status = 'Normal';
+        if ((heartRate && (heartRate > 120 || heartRate < 50)) || 
+            (oxygenLevel && oxygenLevel < 92) || 
+            inactivity > 60) {
+          status = 'Critical';
+        } else if ((heartRate && (heartRate > 100 || heartRate < 60)) || 
+                 (oxygenLevel && oxygenLevel < 95)) {
+          status = 'Warning';
+        }
+
+        return [
+          record.patientId || '',
+          record.timestamp || '',
+          record.timestamp ? new Date(record.timestamp * 1000).toLocaleString() : '',
+          heartRate,
+          oxygenLevel,
+          inactivity,
+          status
+        ];
+      });
+
+      // Combine headers and data
+      const csvContent = [headers, ...csvData]
+        .map(row => row.map(field => `"${field}"`).join(','))
+        .join('\n');
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      // Generate filename with current date and filter info
+      let filename = `Patient_Data_${new Date().toISOString().split('T')[0]}`;
+      
+      if (filterPatientId) {
+        filename += `_${filterPatientId}`;
+      }
+      
+      if (startDate || endDate) {
+        filename += '_Filtered';
+        if (startDate) filename += `_from_${startDate}`;
+        if (endDate) filename += `_to_${endDate}`;
+      }
+      
+      filename += '.csv';
+
+      if (navigator.msSaveBlob) {
+        // IE 10+
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      console.log(`Downloaded ${filteredPatientData.length} records as ${filename}`);
+    } catch (error) {
+      console.error('Error downloading data:', error);
+      alert('Failed to download data. Please try again.');
+    }
+  };
+
   const handleShowTrends = () => {
     if (patientId.trim()) {
       setShowCharts(true);
@@ -301,23 +390,34 @@ const Analytics = () => {
                 <i className="bi bi-table me-2"></i>
                 All Patient Data
               </h5>
-              <button 
-                className="btn btn-outline-primary btn-sm"
-                onClick={fetchAllPatientData}
-                disabled={loadingPatientData}
-              >
-                {loadingPatientData ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-arrow-clockwise me-1"></i>
-                    Refresh Data
-                  </>
-                )}
-              </button>
+              <div className="d-flex gap-2">
+                <button 
+                  className="btn btn-outline-success btn-sm"
+                  onClick={downloadFilteredData}
+                  disabled={loadingPatientData || filteredPatientData.length === 0}
+                  title="Download filtered data as CSV"
+                >
+                  <i className="bi bi-download me-1"></i>
+                  Export CSV
+                </button>
+                <button 
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={fetchAllPatientData}
+                  disabled={loadingPatientData}
+                >
+                  {loadingPatientData ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-arrow-clockwise me-1"></i>
+                      Refresh Data
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
             
             {/* Filter Section */}
@@ -358,16 +458,30 @@ const Analytics = () => {
                 </div>
                 
                 <div className="col-md-3">
-                  <div className="d-flex gap-2">
-                    <button 
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={clearFilters}
-                    >
-                      <i className="bi bi-x-circle me-1"></i>
-                      Clear Filters
-                    </button>
-                    <div className="text-muted small align-self-center ms-2">
+                  <div className="d-flex flex-column gap-2">
+                    <div className="d-flex gap-2">
+                      <button 
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={clearFilters}
+                      >
+                        <i className="bi bi-x-circle me-1"></i>
+                        Clear Filters
+                      </button>
+                      {/* <button 
+                        className="btn btn-success btn-sm"
+                        onClick={downloadFilteredData}
+                        disabled={filteredPatientData.length === 0}
+                        title={`Download ${filteredPatientData.length} filtered records`}
+                      >
+                        <i className="bi bi-download me-1"></i>
+                        Download
+                      </button> */}
+                    </div>
+                    <div className="text-muted small">
                       {filteredPatientData.length} of {allPatientData.length} records
+                      {(filterPatientId || startDate || endDate) && (
+                        <span className="text-primary"> (filtered)</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -464,8 +578,18 @@ const Analytics = () => {
                   {filteredPatientData.length > itemsPerPage && (
                     <nav className="mt-3">
                       <div className="d-flex justify-content-between align-items-center">
-                        <div className="text-muted">
-                          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredPatientData.length)} of {filteredPatientData.length} records
+                        <div className="d-flex align-items-center gap-3">
+                          <div className="text-muted">
+                            Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredPatientData.length)} of {filteredPatientData.length} records
+                          </div>
+                          <button 
+                            className="btn btn-outline-success btn-sm"
+                            onClick={downloadFilteredData}
+                            title="Download all filtered records"
+                          >
+                            <i className="bi bi-download me-1"></i>
+                            Export All ({filteredPatientData.length})
+                          </button>
                         </div>
                         <ul className="pagination pagination-sm mb-0">
                           <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
