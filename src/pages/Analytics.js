@@ -390,7 +390,13 @@ const Analytics = () => {
                 <i className="bi bi-table me-2"></i>
                 All Patient Data
               </h5>
-              <div className="d-flex gap-2">
+              <div className="d-flex gap-4 align-items-center">
+                <div className="text-muted small">
+                  {filteredPatientData.length} of {allPatientData.length} records
+                  {(filterPatientId || startDate || endDate) && (
+                    <span className="text-primary"> (filtered)</span>
+                  )}
+                </div>
                 <button 
                   className="btn btn-outline-success btn-sm"
                   onClick={downloadFilteredData}
@@ -467,22 +473,9 @@ const Analytics = () => {
                         <i className="bi bi-x-circle me-1"></i>
                         Clear Filters
                       </button>
-                      {/* <button 
-                        className="btn btn-success btn-sm"
-                        onClick={downloadFilteredData}
-                        disabled={filteredPatientData.length === 0}
-                        title={`Download ${filteredPatientData.length} filtered records`}
-                      >
-                        <i className="bi bi-download me-1"></i>
-                        Download
-                      </button> */}
+                      
                     </div>
-                    <div className="text-muted small">
-                      {filteredPatientData.length} of {allPatientData.length} records
-                      {(filterPatientId || startDate || endDate) && (
-                        <span className="text-primary"> (filtered)</span>
-                      )}
-                    </div>
+                    
                   </div>
                 </div>
               </div>
