@@ -2,15 +2,36 @@ import React, { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import HeartRateChart from '../components/HeartRateChart';
 import OxygenLevelChart from '../components/OxygenLevelChart';
+import { apiService } from '../services/api';
 
 const Analytics = () => {
   const [patientId, setPatientId] = useState('');
   const [showCharts, setShowCharts] = useState(false);
+  const [allPatientData, setAllPatientData] = useState([]);
+  const [loadingPatientData, setLoadingPatientData] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const heartRateChartRef = useRef(null);
   const oxygenChartRef = useRef(null);
 
   const fetchAnalyticsData = async () => {
     // Placeholder for future analytics data fetching
+  };
+
+  const fetchAllPatientData = async () => {
+    setLoadingPatientData(true);
+    try {
+      const response = await apiService.getAllPatientData();
+      console.log('All patient data response:', response);
+      // Assuming the response has a data array or is directly an array
+      const data = Array.isArray(response) ? response : response.data || response.items || [];
+      setAllPatientData(data);
+    } catch (error) {
+      console.error('Error fetching all patient data:', error);
+      setAllPatientData([]);
+    } finally {
+      setLoadingPatientData(false);
+    }
   };
 
   const handleShowTrends = () => {
@@ -116,6 +137,7 @@ const Analytics = () => {
 
   useEffect(() => {
     fetchAnalyticsData();
+    fetchAllPatientData();
   }, []);
 
   return (
@@ -152,7 +174,7 @@ const Analytics = () => {
               </button>
             </div>
           )}
-          <button className="btn btn-outline-secondary" onClick={fetchAnalyticsData}>
+          <button className="btn btn-outline-secondary" onClick={() => { fetchAnalyticsData(); fetchAllPatientData(); }}>
             <i className="bi bi-arrow-clockwise me-1"></i>
             Refresh
           </button>
@@ -204,6 +226,173 @@ const Analytics = () => {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* All Patient Data Table */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">
+                <i className="bi bi-table me-2"></i>
+                All Patient Data
+              </h5>
+              <button 
+                className="btn btn-outline-primary btn-sm"
+                onClick={fetchAllPatientData}
+                disabled={loadingPatientData}
+              >
+                {loadingPatientData ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-arrow-clockwise me-1"></i>
+                    Refresh Data
+                  </>
+                )}
+              </button>
+            </div>
+            <div className="card-body">
+              {loadingPatientData ? (
+                <div className="text-center py-4">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <p className="mt-2 text-muted">Loading patient data...</p>
+                </div>
+              ) : allPatientData.length > 0 ? (
+                <>
+                  <div className="table-responsive">
+                    <table className="table table-striped table-hover">
+                      <thead className="table-dark">
+                        <tr>
+                          <th>Patient ID</th>
+                          <th>Timestamp</th>
+                          <th>Heart Rate (BPM)</th>
+                          <th>Oxygen Level (%)</th>
+                          <th>Inactivity (min)</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allPatientData
+                          .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                          .map((record, index) => {
+                            const heartRate = record.heartRate;
+                            const oxygenLevel = record.oxygenLevel;
+                            const inactivity = record.inactivityMinutes || 0;
+                            
+                            // Determine status based on critical conditions
+                            let status = 'Normal';
+                            let statusClass = 'text-success';
+                            
+                            if ((heartRate && (heartRate > 120 || heartRate < 50)) || 
+                                (oxygenLevel && oxygenLevel < 92) || 
+                                inactivity > 60) {
+                              status = 'Critical';
+                              statusClass = 'text-danger';
+                            } else if ((heartRate && (heartRate > 100 || heartRate < 60)) || 
+                                     (oxygenLevel && oxygenLevel < 95)) {
+                              status = 'Warning';
+                              statusClass = 'text-warning';
+                            }
+                            
+                            return (
+                              <tr key={`${record.patientId}-${record.timestamp}-${index}`}>
+                                <td>
+                                  <strong>{record.patientId}</strong>
+                                </td>
+                                <td>
+                                  {record.timestamp ? 
+                                    new Date(record.timestamp * 1000).toLocaleString() : 
+                                    'N/A'
+                                  }
+                                </td>
+                                <td>
+                                  {heartRate ? (
+                                    <span className={heartRate > 120 || heartRate < 50 ? 'text-danger fw-bold' : ''}>
+                                      {heartRate}
+                                    </span>
+                                  ) : 'N/A'}
+                                </td>
+                                <td>
+                                  {oxygenLevel ? (
+                                    <span className={oxygenLevel < 92 ? 'text-danger fw-bold' : ''}>
+                                      {oxygenLevel}%
+                                    </span>
+                                  ) : 'N/A'}
+                                </td>
+                                <td>
+                                  <span className={inactivity > 60 ? 'text-danger fw-bold' : ''}>
+                                    {inactivity}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className={`fw-bold ${statusClass}`}>
+                                    {status}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  {/* Pagination */}
+                  {allPatientData.length > itemsPerPage && (
+                    <nav className="mt-3">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="text-muted">
+                          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, allPatientData.length)} of {allPatientData.length} records
+                        </div>
+                        <ul className="pagination pagination-sm mb-0">
+                          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <button 
+                              className="page-link" 
+                              onClick={() => setCurrentPage(currentPage - 1)}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                          </li>
+                          {[...Array(Math.ceil(allPatientData.length / itemsPerPage))].map((_, i) => (
+                            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                              <button 
+                                className="page-link" 
+                                onClick={() => setCurrentPage(i + 1)}
+                              >
+                                {i + 1}
+                              </button>
+                            </li>
+                          ))}
+                          <li className={`page-item ${currentPage === Math.ceil(allPatientData.length / itemsPerPage) ? 'disabled' : ''}`}>
+                            <button 
+                              className="page-link" 
+                              onClick={() => setCurrentPage(currentPage + 1)}
+                              disabled={currentPage === Math.ceil(allPatientData.length / itemsPerPage)}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </nav>
+                  )}
+                </>
+              ) : (
+                <div className="text-center text-muted py-4">
+                  <i className="bi bi-inbox" style={{ fontSize: '3rem', opacity: 0.3 }}></i>
+                  <h5 className="mt-3">No Patient Data Available</h5>
+                  <p>No patient telemetry data has been recorded yet.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

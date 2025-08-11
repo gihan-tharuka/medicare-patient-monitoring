@@ -123,6 +123,17 @@ deletePatient: async (patientId) => {
   }
 },
 
+getAllPatientData: async () => {
+  try {
+    const response = await api.get('/all-patient-data');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all patient data:', error);
+    throw error;
+  }
+},
+
+
 
 // Send test data
 sendTestData: async (patientId, heartRate, oxygenLevel, inactivityMinutes = 0) => {
