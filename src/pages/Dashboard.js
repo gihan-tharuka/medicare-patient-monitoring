@@ -209,7 +209,7 @@ const Dashboard = () => {
                               {alert.severity}
                             </span>
                           </td>
-                          <td>{new Date(alert.timestamp).toLocaleString()}</td>
+                          <td>{alert.timestamp ? new Date(alert.timestamp * 1000).toLocaleString() : 'N/A'}</td>
                         </tr>
                       ))}
                     </tbody>

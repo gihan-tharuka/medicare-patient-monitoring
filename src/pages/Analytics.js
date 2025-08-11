@@ -376,6 +376,22 @@ const Analytics = () => {
                   </div>
                 )}
               </div>
+              
+              {/* Charts Section */}
+              {showCharts && patientId && (
+                <div className="row mt-4">
+                  <div className="col-12 mb-4">
+                    <div ref={heartRateChartRef}>
+                      <HeartRateChart patientId={patientId} autoLoad={true} />
+                    </div>
+                  </div>
+                  <div className="col-12 mb-4">
+                    <div ref={oxygenChartRef}>
+                      <OxygenLevelChart patientId={patientId} autoLoad={true} />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -645,22 +661,6 @@ const Analytics = () => {
           </div>
         </div>
       </div>
-
-      {/* Charts Section */}
-      {showCharts && patientId && (
-        <div className="row mb-4">
-          <div className="col-12 mb-4">
-            <div ref={heartRateChartRef}>
-              <HeartRateChart patientId={patientId} autoLoad={true} />
-            </div>
-          </div>
-          <div className="col-12 mb-4">
-            <div ref={oxygenChartRef}>
-              <OxygenLevelChart patientId={patientId} autoLoad={true} />
-            </div>
-          </div>
-        </div>
-      )}
 
       {!showCharts && (
         <div className="row">
