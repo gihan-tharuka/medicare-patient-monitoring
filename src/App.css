@@ -8,6 +8,48 @@
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
+/* Fixed layout styles */
+.sidebar.position-fixed {
+  width: 16.66667%; /* col-md-3 equivalent */
+}
+
+@media (min-width: 992px) {
+  .sidebar.position-fixed {
+    width: 16.66667%; /* col-lg-2 equivalent */
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidebar.position-fixed {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  main[style*="marginLeft"] {
+    margin-left: 0 !important;
+  }
+}
+
+/* Ensure main content doesn't overlap on smaller screens */
+@media (max-width: 767.98px) {
+  .container-fluid[style*="marginTop"] {
+    margin-top: 80px !important;
+  }
+}
+
+/* Main content positioning */
+@media (min-width: 768px) {
+  .main-content-fixed {
+    margin-left: 16.66667% !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content-fixed {
+    margin-left: 16.66667% !important;
+  }
+}
+
 .sidebar .nav-link {
   color: #495057;
   border-radius: 0.375rem;

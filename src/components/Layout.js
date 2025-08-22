@@ -17,11 +17,18 @@ const Layout = ({ children, signOut, user }) => {
     <div className="d-flex flex-column min-vh-100">
       <Header user={user} signOut={signOut} />
 
-      <div className="container-fluid flex-grow-1">
+      <div className="container-fluid flex-grow-1" style={{ marginTop: '80px' }}>
         <div className="row h-100">
           {/* Sidebar Navigation */}
-          <nav className="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div className="position-sticky pt-3">
+          <nav className="col-md-3 col-lg-2 d-md-block bg-light sidebar position-fixed" 
+               style={{ 
+                 top: '80px', 
+                 left: '0', 
+                 height: 'calc(100vh - 80px)',
+                 overflowY: 'auto',
+                 zIndex: 1020
+               }}>
+            <div className="pt-3">
               <ul className="nav flex-column">
                 {navigationItems.map((item) => (
                   <li className="nav-item" key={item.path}>
@@ -41,7 +48,11 @@ const Layout = ({ children, signOut, user }) => {
           </nav>
 
           {/* Main Content */}
-          <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content-fixed" 
+                style={{ 
+                  height: 'calc(100vh - 80px)',
+                  overflowY: 'auto'
+                }}>
             <div className="pt-3">
               {children}
             </div>

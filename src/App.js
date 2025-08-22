@@ -17,6 +17,7 @@ import awsconfig from './aws-exports';
 // Import the new Authenticator component & default styles
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import './styles/amplify-custom.css';
 
 // Configure Amplify
 Amplify.configure(awsconfig);

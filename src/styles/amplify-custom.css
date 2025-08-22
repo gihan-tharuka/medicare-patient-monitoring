@@ -21,3 +21,18 @@
   /* Example: override error color */
   --amplify-error-color: #cc0000;
 }
+
+/* Add space to the top of the login container */
+[data-amplify-authenticator] {
+  padding-top: 60px;
+}
+
+/* Alternative: target the main container */
+.amplify-authenticator {
+  padding-top: 60px;
+}
+
+/* Or target the form container specifically */
+[data-amplify-authenticator] [data-amplify-container] {
+  margin-top: 60px;
+}

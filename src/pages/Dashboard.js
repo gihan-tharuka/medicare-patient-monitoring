@@ -191,7 +191,6 @@ const Dashboard = () => {
                     <thead>
                       <tr>
                         <th>Patient ID</th>
-                        <th>Alert Type</th>
                         <th>Severity</th>
                         <th>Time</th>
                       </tr>
@@ -200,13 +199,9 @@ const Dashboard = () => {
                       {dashboardData.recentAlerts.slice(0, 5).map((alert, index) => (
                         <tr key={index}>
                           <td>{alert.patientId}</td>
-                          <td>{alert.alertType}</td>
                           <td>
-                            <span className={`badge ${
-                              alert.severity === 'HIGH' ? 'bg-danger' : 
-                              alert.severity === 'MEDIUM' ? 'bg-warning' : 'bg-info'
-                            }`}>
-                              {alert.severity}
+                            <span className="badge bg-danger">
+                              Critical
                             </span>
                           </td>
                           <td>{alert.timestamp ? new Date(alert.timestamp * 1000).toLocaleString() : 'N/A'}</td>
