@@ -139,6 +139,21 @@ const Patients = () => {
     (patient.patientId && patient.patientId.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Calculate statistics
+  const totalPatients = patients.length;
+  const malePatients = patients.filter(patient => patient.gender?.toLowerCase() === 'male').length;
+  const femalePatients = patients.filter(patient => patient.gender?.toLowerCase() === 'female').length;
+  const averageAge = totalPatients > 0 
+    ? Math.round(patients.reduce((sum, patient) => sum + (parseInt(patient.age) || 0), 0) / totalPatients)
+    : 0;
+  const recentPatients = patients.filter(patient => {
+    if (!patient.createdAt && !patient.dateAdded) return false;
+    const patientDate = new Date(patient.createdAt || patient.dateAdded);
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return patientDate >= sevenDaysAgo;
+  }).length;
+
   useEffect(() => {
     fetchPatients();
   }, []);
@@ -174,6 +189,95 @@ const Patients = () => {
             <i className="bi bi-arrow-clockwise me-1"></i>
             Refresh
           </button>
+        </div>
+      </div>
+
+      {/* Patient Statistics Cards */}
+      <div className="row mb-4">
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card border-left-primary shadow h-100 py-2">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    Total Patients
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">
+                    {loading ? '...' : totalPatients}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="bi bi-people text-primary" style={{ fontSize: '2rem' }}></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card border-left-success shadow h-100 py-2">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    Male Patients
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">
+                    {loading ? '...' : malePatients}
+                    {!loading && totalPatients > 0 && (
+                      <small className="text-muted ms-2">({Math.round((malePatients / totalPatients) * 100)}%)</small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="bi bi-person text-success" style={{ fontSize: '2rem' }}></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card border-left-info shadow h-100 py-2">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
+                    Female Patients
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">
+                    {loading ? '...' : femalePatients}
+                    {!loading && totalPatients > 0 && (
+                      <small className="text-muted ms-2">({Math.round((femalePatients / totalPatients) * 100)}%)</small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="bi bi-person-dress text-info" style={{ fontSize: '2rem' }}></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card border-left-warning shadow h-100 py-2">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                    Average Age
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">
+                    {loading ? '...' : `${averageAge} years`}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="bi bi-calendar-date text-warning" style={{ fontSize: '2rem' }}></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
