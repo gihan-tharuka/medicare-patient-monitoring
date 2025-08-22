@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = ({ user, signOut }) => {
   return (
-    <header className="bg-primary text-white py-3 fixed-top" style={{ zIndex: 1030 }}>
+    <header className="bg-primary text-white py-3">
       <div className="container-fluid">
         <div className="d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
