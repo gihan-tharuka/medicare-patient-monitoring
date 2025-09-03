@@ -41,7 +41,16 @@ throw error;
 // Get dashboard data
 getDashboardData: async () => {
 try {
-const response = await api.get('/dashboard');
+// Get JWT from current session using Amplify v6 syntax
+const session = await fetchAuthSession();
+const token = session.tokens?.idToken?.toString();
+
+// Call API with Authorization header
+const response = await api.get('/dashboard', {
+headers: {
+Authorization: `Bearer ${token}`,
+},
+});
 return response.data;
 } catch (error) {
 console.error('Error fetching dashboard data:', error);
@@ -51,7 +60,16 @@ throw error;
 
 getPatientTrend: async (patientId) => {
     try {
-      const response = await api.get(`/patient-trend/${patientId}`);
+      // Get JWT from current session using Amplify v6 syntax
+      const session = await fetchAuthSession();
+      const token = session.tokens?.idToken?.toString();
+
+      // Call API with Authorization header
+      const response = await api.get(`/patient-trend/${patientId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error('Error fetching patient trend:', error);
@@ -93,7 +111,16 @@ getPatientTrend: async (patientId) => {
 // src/services/api.js
 getAllPatients: async () => {
   try {
-    const response = await api.get('/list-patients');
+    // Get JWT from current session using Amplify v6 syntax
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+
+    // Call API with Authorization header
+    const response = await api.get('/list-patients', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching patients:', error);
@@ -104,8 +131,16 @@ getAllPatients: async () => {
 // src/services/api.js
 updatePatient: async (patientId, updates) => {
   try {
-    // Optionally: add token authorization header if route is protected
-    const response = await api.put('/update-patient', { patientId, ...updates });
+    // Get JWT from current session using Amplify v6 syntax
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+
+    // Call API with Authorization header
+    const response = await api.put('/update-patient', { patientId, ...updates }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error updating patient:', error);
@@ -115,7 +150,17 @@ updatePatient: async (patientId, updates) => {
 // src/services/api.js
 deletePatient: async (patientId) => {
   try {
-    const response = await api.delete('/delete-patient', { data: { patientId } });
+    // Get JWT from current session using Amplify v6 syntax
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+
+    // Call API with Authorization header
+    const response = await api.delete('/delete-patient', { 
+      data: { patientId },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error deleting patient:', error);
@@ -125,7 +170,16 @@ deletePatient: async (patientId) => {
 
 getAllPatientData: async () => {
   try {
-    const response = await api.get('/all-patient-data');
+    // Get JWT from current session using Amplify v6 syntax
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+
+    // Call API with Authorization header
+    const response = await api.get('/all-patient-data', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching all patient data:', error);
