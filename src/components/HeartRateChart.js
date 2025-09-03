@@ -3,12 +3,14 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  TimeScale,
   PointElement,
   LineElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 
 import { Line } from 'react-chartjs-2';
 import apiService from '../services/api';
@@ -17,6 +19,7 @@ import apiService from '../services/api';
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  TimeScale,
   PointElement,
   LineElement,
   Title,
@@ -39,8 +42,47 @@ const HeartRateChart = ({ patientId: propPatientId, autoLoad = false }) => {
     setError(null);
     try {
       const data = await apiService.getPatientTrend(id);
-      setTrendData(data);
+      console.log('Heart Rate Chart - Raw API response:', data);
+      
+      // Handle different response formats
+      let processedData = [];
+      if (Array.isArray(data)) {
+        processedData = data;
+      } else if (data && data.data && Array.isArray(data.data)) {
+        processedData = data.data;
+      } else if (data && data.items && Array.isArray(data.items)) {
+        processedData = data.items;
+      } else {
+        console.log('Unexpected data format:', data);
+        processedData = [];
+      }
+      
+      // Validate and filter data
+      const validData = processedData
+        .filter(item => {
+          const isValid = item && 
+                         item.timestamp && 
+                         item.heartRate !== null && 
+                         item.heartRate !== undefined &&
+                         !isNaN(item.heartRate);
+          
+          if (!isValid) {
+            console.log('Invalid heart rate data point:', item);
+          }
+          return isValid;
+        })
+        .sort((a, b) => a.timestamp - b.timestamp); // Sort by timestamp
+      
+      console.log('Heart Rate Chart - Valid data points:', validData);
+      console.log('Heart Rate Chart - Value range:', {
+        min: Math.min(...validData.map(d => d.heartRate)),
+        max: Math.max(...validData.map(d => d.heartRate)),
+        count: validData.length
+      });
+      
+      setTrendData(validData);
     } catch (err) {
+      console.error('Heart Rate Chart - Error fetching data:', err);
       setError('Could not fetch heart rate data');
     } finally {
       setLoading(false);
@@ -63,11 +105,26 @@ const HeartRateChart = ({ patientId: propPatientId, autoLoad = false }) => {
   }, [propPatientId, autoLoad]);
 
   const chartData = {
-    labels: trendData.map(d => new Date(d.timestamp * 1000).toLocaleString()),
+    labels: trendData.map(d => {
+      let timestamp = d.timestamp;
+      if (typeof timestamp === 'string') {
+        timestamp = parseInt(timestamp);
+      }
+      
+      const date = timestamp > 10000000000 
+        ? new Date(timestamp) 
+        : new Date(timestamp * 1000);
+        
+      return date.toLocaleString();
+    }),
     datasets: [
       {
         label: 'Heart Rate (BPM)',
-        data: trendData.map(d => d.heartRate),
+        data: trendData.map(d => {
+          const value = Number(d.heartRate) || 0;
+          console.log('Heart Rate data point:', { timestamp: d.timestamp, heartRate: d.heartRate, value });
+          return value;
+        }),
         borderColor: 'rgb(220, 53, 69)',
         backgroundColor: 'rgba(220, 53, 69, 0.1)',
         fill: true,
@@ -83,6 +140,10 @@ const HeartRateChart = ({ patientId: propPatientId, autoLoad = false }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      intersect: false,
+      mode: 'index',
+    },
     plugins: {
       legend: { 
         position: 'top',
@@ -121,13 +182,12 @@ const HeartRateChart = ({ patientId: propPatientId, autoLoad = false }) => {
         },
         ticks: {
           color: '#666',
-          maxTicksLimit: 10
+          maxTicksLimit: 10,
+          maxRotation: 45
         }
       },
       y: {
         beginAtZero: false,
-        min: 50,
-        max: 120,
         title: { 
           display: true, 
           text: 'Heart Rate (BPM)',

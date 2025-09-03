@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 import HeartRateChart from '../components/HeartRateChart';
 import OxygenLevelChart from '../components/OxygenLevelChart';
@@ -40,7 +40,7 @@ const Analytics = () => {
     }
   };
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...allPatientData];
 
     // Filter by patient ID
@@ -73,7 +73,7 @@ const Analytics = () => {
 
     setFilteredPatientData(filtered);
     setCurrentPage(1); // Reset to first page when filters are applied
-  };
+  }, [allPatientData, filterPatientId, startDate, endDate]);
 
   const clearFilters = () => {
     setFilterPatientId('');
@@ -288,7 +288,7 @@ const Analytics = () => {
     if (allPatientData.length > 0) {
       applyFilters();
     }
-  }, [filterPatientId, startDate, endDate, allPatientData]);
+  }, [applyFilters, allPatientData]);
 
   return (
     <div>

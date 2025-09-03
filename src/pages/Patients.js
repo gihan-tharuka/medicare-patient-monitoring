@@ -146,13 +146,6 @@ const Patients = () => {
   const averageAge = totalPatients > 0 
     ? Math.round(patients.reduce((sum, patient) => sum + (parseInt(patient.age) || 0), 0) / totalPatients)
     : 0;
-  const recentPatients = patients.filter(patient => {
-    if (!patient.createdAt && !patient.dateAdded) return false;
-    const patientDate = new Date(patient.createdAt || patient.dateAdded);
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    return patientDate >= sevenDaysAgo;
-  }).length;
 
   useEffect(() => {
     fetchPatients();
