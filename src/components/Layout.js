@@ -8,7 +8,6 @@ const Layout = ({ children, signOut, user }) => {
   const navigationItems = [
     { path: '/', label: 'Dashboard', icon: 'bi-speedometer2' },
     { path: '/patients', label: 'Patients', icon: 'bi-people' },
-    { path: '/monitoring', label: 'Monitoring', icon: 'bi-activity' },
     { path: '/alerts', label: 'Alerts', icon: 'bi-exclamation-triangle' },
     { path: '/analytics', label: 'Analytics', icon: 'bi-bar-chart' },
   ];
