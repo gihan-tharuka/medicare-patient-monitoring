@@ -14,12 +14,12 @@ const Alerts = () => {
   const fetchAlerts = async () => {
     try {
       setLoading(true);
-      const data = await apiService.getDashboardData();
-      setAlerts(data.recentAlerts || []);
+      const data = await apiService.getCriticalAlerts();
+      setAlerts(data.alerts || []);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch alerts');
-      console.error('Alerts fetch error:', err);
+      setError('Failed to fetch critical alerts');
+      console.error('Critical alerts fetch error:', err);
       setAlerts([]);
     } finally {
       setLoading(false);
@@ -200,7 +200,7 @@ const Alerts = () => {
     <div>
       {/* Page Header */}
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 className="h2">Alert Management</h1>
+        <h1 className="h2">Critical Alert Management</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <div className="btn-group me-2">
             <select
@@ -232,7 +232,7 @@ const Alerts = () => {
               className="btn btn-success btn-sm me-2"
               onClick={downloadAlerts}
               disabled={alerts.length === 0 || getFilteredAlertsCount() === 0}
-              title={`Download ${getFilteredAlertsCount()} alerts`}
+              title={`Download ${getFilteredAlertsCount()} critical alerts`}
             >
               <i className="bi bi-download me-1"></i>
               Download ({getFilteredAlertsCount()})
@@ -260,14 +260,14 @@ const Alerts = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                    Total Alerts
+                    Critical Alerts
                   </div>
                   <div className="h5 mb-0 font-weight-bold text-gray-800">
                     {counts.total}
                   </div>
                 </div>
                 <div className="col-auto">
-                  <i className="bi bi-bell text-primary"></i>
+                  <i className="bi bi-exclamation-triangle text-primary"></i>
                 </div>
               </div>
             </div>
@@ -391,7 +391,7 @@ const Alerts = () => {
             <div className="card-header">
               <h5 className="mb-0">
                 <i className="bi bi-list-ul me-2"></i>
-                Alerts List ({filteredAlerts.length} alerts)
+                Critical Alerts List ({filteredAlerts.length} alerts)
               </h5>
             </div>
             <div className="card-body">
@@ -406,7 +406,7 @@ const Alerts = () => {
                 <div className="text-center py-4">
                   <i className="bi bi-bell-slash" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
                   <p className="mt-2 text-muted">
-                    {searchTerm || filter !== 'all' ? 'No alerts found matching your criteria.' : 'No alerts available.'}
+                    {searchTerm || filter !== 'all' ? 'No critical alerts found matching your criteria.' : 'No critical alerts available.'}
                   </p>
                 </div>
               ) : (

@@ -187,6 +187,26 @@ getAllPatientData: async () => {
   }
 },
 
+// Get critical alerts
+getCriticalAlerts: async () => {
+  try {
+    // Get JWT from current session using Amplify v6 syntax
+    const session = await fetchAuthSession();
+    const token = session.tokens?.idToken?.toString();
+
+    // Call API with Authorization header
+    const response = await api.get('/critical-alerts', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching critical alerts:', error);
+    throw error;
+  }
+},
+
 
 
 // Send test data
