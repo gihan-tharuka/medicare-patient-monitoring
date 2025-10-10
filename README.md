@@ -212,7 +212,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Contact Information
 
 For questions or support, please contact:
-- Project Maintainer: [Your Name](mailto:gihantharuka2499@gmail.com)
+- Project Maintainer: [Gihan Tharuka](mailto:gihantharuka2499@gmail.com)
 - GitHub: [gihan-tharuka](https://github.com/gihan-tharuka)
 
 ---
