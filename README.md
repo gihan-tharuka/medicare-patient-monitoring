@@ -29,14 +29,6 @@ The Medicare Patient Monitoring System is a comprehensive web application design
 - **Cloud Infrastructure**: AWS (API Gateway, Lambda, DynamoDB)
 - **Building & Deployment**: React Scripts
 
-## 🖼️ Screenshots
-
-*[Add screenshots of key app screens here]*
-
-## 🚀 Live Demo
-
-*[If available, add a link to the live demo here]*
-
 ## 📦 Installation & Setup
 
 ### Prerequisites
@@ -89,7 +81,7 @@ REACT_APP_API_BASE_URL=https://your-api-gateway-url.amazonaws.com/dev
 
 ### User Authentication
 
-The system requires authentication. You can create a new account or sign in using the AWS Amplify authenticator on the login page.
+The system requires authentication. You can sign in using the AWS Amplify authenticator on the login page.
 
 ### Dashboard Navigation
 
