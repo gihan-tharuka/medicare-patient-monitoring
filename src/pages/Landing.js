@@ -4,6 +4,47 @@ import { Link } from 'react-router-dom';
 const Landing = () => {
   return (
     <div className="min-vh-100 d-flex flex-column">
+      {/* Navigation Bar */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div className="container">
+          <Link to="/" className="navbar-brand fw-bold">
+            <i className="bi bi-heart-pulse me-2"></i>
+            MediSys
+          </Link>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+<ul className="navbar-nav ms-auto">
+  <li className="nav-item">
+    <Link to="/" className="nav-link active">Home</Link>
+  </li>
+  <li className="nav-item">
+    <Link to="/login" className="nav-link">Login</Link>
+  </li>
+  {/* <li className="nav-item">
+    <Link to="/login" className="nav-link">Sign Up</Link>
+  </li> */}
+  {/* <li className="nav-item">
+    <Link to="/login" className="nav-link">Demo</Link>
+  </li> */}
+  <li className="nav-item">
+    <a href="#features" className="nav-link">Features Overview</a>
+    </li>
+  <li className="nav-item">
+    <a href="#stats" className="nav-link">System Performance</a>
+    </li>
+  <li className="nav-item">
+    <a href="#tech" className="nav-link">Technology</a>
+    </li>
+  <li className="nav-item">
+    <a href="#cta" className="nav-link">Get Started</a>
+  </li>
+</ul>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <section className="hero-section bg-gradient-primary text-white py-5">
         <div className="container">
@@ -39,7 +80,7 @@ const Landing = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-5 bg-light">
+      <section id="features" className="py-5 bg-light">
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="h1 fw-bold">Powerful Features</h2>
@@ -78,7 +119,7 @@ const Landing = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-5">
+      <section id="stats" className="py-5">
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="h1 fw-bold">System Performance</h2>
@@ -114,7 +155,7 @@ const Landing = () => {
       </section>
 
       {/* Technology Section */}
-      <section className="py-5 bg-light">
+      <section id="tech" className="py-5 bg-light">
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="h1 fw-bold">Built with Modern Technology</h2>
@@ -162,7 +203,7 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-5 bg-gradient-primary text-white">
+      <section id="cta" className="py-5 bg-gradient-primary text-white">
         <div className="container text-center">
           <h2 className="h1 fw-bold mb-3">Ready to Transform Patient Care?</h2>
           <p className="lead mb-4">Join thousands of healthcare providers using MediSys to deliver better patient outcomes.</p>
