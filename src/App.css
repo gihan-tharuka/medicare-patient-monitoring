@@ -1163,6 +1163,349 @@
 }
 
 /* ==========================================
+   Technology Section Modern Styles
+   ========================================== */
+
+.tech-section {
+  background: linear-gradient(180deg, #f1f4f9 0%, #eef1f6 100%);
+  position: relative;
+}
+
+/* Background decorations */
+.tech-bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Subtle dot grid pattern */
+.tech-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(102, 126, 234, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+}
+
+/* Floating blurred blobs */
+.tech-bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.12;
+}
+
+.tech-bg-blob-1 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #667eea, transparent);
+  top: -10%;
+  right: -5%;
+  animation: techDrift 22s ease-in-out infinite;
+}
+
+.tech-bg-blob-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #764ba2, transparent);
+  bottom: -5%;
+  left: -3%;
+  animation: techDrift 18s ease-in-out infinite reverse;
+}
+
+@keyframes techDrift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(15px, -12px) scale(1.03);
+  }
+  66% {
+    transform: translate(-10px, 8px) scale(0.98);
+  }
+}
+
+/* Badge */
+.tech-badge {
+  background: linear-gradient(135deg, #667eea12 0%, #764ba212 100%);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  color: #667eea;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tech-badge i {
+  font-size: 0.85rem;
+}
+
+/* Heading */
+.tech-heading {
+  background: linear-gradient(135deg, #1a1a2e 0%, #302b63 50%, #667eea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tech-subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Row labels */
+.tech-row-label {
+  position: relative;
+  z-index: 1;
+}
+
+.tech-row-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 0.35rem 1.25rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Modern Tech Cards */
+.tech-card-modern {
+  position: relative;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 1.5rem 1rem;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: techCardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tech-card-reveal-1 { animation-delay: 0.1s; }
+.tech-card-reveal-2 { animation-delay: 0.2s; }
+.tech-card-reveal-3 { animation-delay: 0.3s; }
+.tech-card-reveal-4 { animation-delay: 0.4s; }
+.tech-card-reveal-5 { animation-delay: 0.5s; }
+.tech-card-reveal-6 { animation-delay: 0.6s; }
+
+@keyframes techCardIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tech-card-modern:hover {
+  transform: translateY(-6px) scale(1.03);
+  border-color: rgba(102, 126, 234, 0.25);
+  box-shadow:
+    0 16px 48px rgba(102, 126, 234, 0.12),
+    0 0 24px rgba(102, 126, 234, 0.04);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Gradient border effect on hover */
+.tech-card-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 200%;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s ease, background-position 0.5s ease;
+  pointer-events: none;
+}
+
+.tech-card-modern:hover .tech-card-border {
+  opacity: 1;
+  animation: techBorderShift 2s linear infinite;
+}
+
+@keyframes techBorderShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.tech-card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tech-card-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 0.25rem;
+}
+
+.tech-card-modern:hover .tech-card-icon-wrap {
+  transform: scale(1.1) rotate(-5deg);
+  border-radius: 14px;
+}
+
+.tech-icon-react {
+  background: linear-gradient(135deg, #61dafb20 0%, #61dafb30 100%);
+  color: #61dafb;
+}
+
+.tech-icon-aws {
+  background: linear-gradient(135deg, #ff990020 0%, #ff990030 100%);
+  color: #ff9900;
+}
+
+.tech-icon-node {
+  background: linear-gradient(135deg, #33993320 0%, #33993330 100%);
+  color: #339933;
+}
+
+.tech-icon-chart {
+  background: linear-gradient(135deg, #f472b620 0%, #f472b630 100%);
+  color: #f472b6;
+}
+
+.tech-icon-bootstrap {
+  background: linear-gradient(135deg, #7952b320 0%, #7952b330 100%);
+  color: #7952b3;
+}
+
+.tech-icon-db {
+  background: linear-gradient(135deg, #6366f120 0%, #6366f130 100%);
+  color: #6366f1;
+}
+
+.tech-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  transition: color 0.3s ease;
+}
+
+.tech-card-modern:hover .tech-card-name {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tech-card-desc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* Trust row */
+.tech-trust-row {
+  position: relative;
+  z-index: 1;
+}
+
+.tech-trust-text {
+  font-size: 0.8rem;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.6rem 1.25rem;
+  border-radius: 100px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  display: inline-flex;
+}
+
+.tech-trust-text i {
+  font-size: 1rem;
+}
+
+/* Tech responsive */
+@media (max-width: 767.98px) {
+  .tech-card-modern {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .tech-card-icon-wrap {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+  }
+
+  .tech-card-name {
+    font-size: 0.9rem;
+  }
+
+  .tech-row-tag {
+    font-size: 0.7rem;
+  }
+
+  .tech-trust-text {
+    font-size: 0.7rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .tech-card-icon-wrap {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+  }
+
+  .tech-card-name {
+    font-size: 0.8rem;
+  }
+
+  .tech-card-desc {
+    font-size: 0.65rem;
+  }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tech-card-modern {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .tech-card-modern:hover {
+    transform: none;
+  }
+
+  .tech-card-border {
+    opacity: 0;
+  }
+
+  .tech-bg-blob {
+    animation: none;
+  }
+}
+
+/* ==========================================
    Features Section Modern Styles
    ========================================== */
 

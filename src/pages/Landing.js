@@ -363,7 +363,6 @@ const Landing = () => {
             </p>
           </div>
 
-          {/* Main metric cards */}
           <div className="stats-grid">
             <div className="stats-main-card stats-main-card-accent">
               <div className="stats-main-inner">
@@ -442,7 +441,6 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Secondary metrics row */}
           <div className="stats-secondary-row row g-3 mt-4 justify-content-center">
             <div className="col-6 col-md-3">
               <div className="stats-secondary-card">
@@ -493,48 +491,120 @@ const Landing = () => {
       </section>
 
       {/* Technology Section */}
-      <section id="tech" className="py-5 bg-light position-relative overflow-hidden">
-        <div className="container">
+      <section id="tech" className="tech-section py-5 position-relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="tech-bg-shapes">
+          <div className="tech-bg-grid"></div>
+          <div className="tech-bg-blob tech-bg-blob-1"></div>
+          <div className="tech-bg-blob tech-bg-blob-2"></div>
+        </div>
+
+        <div className="container position-relative">
           <div className="text-center mb-5">
-            <h2 className="h1 fw-bold text-gradient-primary">Built with Modern Technology</h2>
-            <p className="lead text-muted" style={{ fontSize: '1.1rem' }}>Using cutting-edge tools for reliable performance</p>
+            <span className="tech-badge d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3">
+              <i className="bi bi-cpu"></i>
+              Tech Stack
+            </span>
+            <h2 className="tech-heading display-5 fw-bold mb-3">
+              Built with Modern Technology
+            </h2>
+            <p className="tech-subtitle lead mx-auto" style={{ maxWidth: '640px' }}>
+              Powered by cutting-edge tools and frameworks to deliver reliable, 
+              scalable, and secure patient monitoring at enterprise scale.
+            </p>
           </div>
-          <div className="row g-4">
-            <div className="col-md-2 col-4 text-center">
-              <div className="tech-icon mb-3 bg-white rounded-15 shadow-lg hover-lift p-3">
-                <i className="fab fa-react" style={{ fontSize: '2rem' }}></i>
+
+          {/* Core platform row */}
+          <div className="tech-row-label text-center mb-4">
+            <span className="tech-row-tag">Core Platform</span>
+          </div>
+          <div className="row g-4 justify-content-center mb-5">
+            <div className="col-6 col-md-4 col-lg-3">
+              <div className="tech-card-modern tech-card-reveal-1">
+                <div className="tech-card-border"></div>
+                <div className="tech-card-content">
+                  <div className="tech-card-icon-wrap tech-icon-react">
+                    <i className="fab fa-react"></i>
+                  </div>
+                  <span className="tech-card-name">React</span>
+                  <span className="tech-card-desc">UI Framework</span>
+                </div>
               </div>
-              <div className="tech-label">React</div>
             </div>
-            <div className="col-md-2 col-4 text-center">
-              <div className="tech-icon mb-3 bg-white rounded-15 shadow-lg hover-lift p-3">
-                <i className="fab fa-aws" style={{ fontSize: '2rem' }}></i>
+            <div className="col-6 col-md-4 col-lg-3">
+              <div className="tech-card-modern tech-card-reveal-2">
+                <div className="tech-card-border"></div>
+                <div className="tech-card-content">
+                  <div className="tech-card-icon-wrap tech-icon-aws">
+                    <i className="fab fa-aws"></i>
+                  </div>
+                  <span className="tech-card-name">AWS</span>
+                  <span className="tech-card-desc">Cloud Infrastructure</span>
+                </div>
               </div>
-              <div className="tech-label">AWS</div>
             </div>
-            <div className="col-md-2 col-4 text-center">
-              <div className="tech-icon mb-3 bg-white rounded-15 shadow-lg hover-lift p-3">
-                <i className="fas fa-chart-line" style={{ fontSize: '2rem' }}></i>
+            <div className="col-6 col-md-4 col-lg-3">
+              <div className="tech-card-modern tech-card-reveal-3">
+                <div className="tech-card-border"></div>
+                <div className="tech-card-content">
+                  <div className="tech-card-icon-wrap tech-icon-node">
+                    <i className="fab fa-node-js"></i>
+                  </div>
+                  <span className="tech-card-name">Node.js</span>
+                  <span className="tech-card-desc">Runtime Engine</span>
+                </div>
               </div>
-              <div className="tech-label">Chart.js</div>
             </div>
-            <div className="col-md-2 col-4 text-center">
-              <div className="tech-icon mb-3 bg-white rounded-15 shadow-lg hover-lift p-3">
-                <i className="fab fa-bootstrap" style={{ fontSize: '2rem' }}></i>
+          </div>
+
+          {/* Supporting libraries row */}
+          <div className="tech-row-label text-center mb-4">
+            <span className="tech-row-tag">Supporting Libraries</span>
+          </div>
+          <div className="row g-4 justify-content-center">
+            <div className="col-6 col-md-4 col-lg-3">
+              <div className="tech-card-modern tech-card-reveal-4">
+                <div className="tech-card-border"></div>
+                <div className="tech-card-content">
+                  <div className="tech-card-icon-wrap tech-icon-chart">
+                    <i className="fas fa-chart-line"></i>
+                  </div>
+                  <span className="tech-card-name">Chart.js</span>
+                  <span className="tech-card-desc">Data Visualization</span>
+                </div>
               </div>
-              <div className="tech-label">Bootstrap</div>
             </div>
-            <div className="col-md-2 col-4 text-center">
-              <div className="tech-icon mb-3 bg-white rounded-15 shadow-lg hover-lift p-3">
-                <i className="fab fa-node" style={{ fontSize: '2rem' }}></i>
+            <div className="col-6 col-md-4 col-lg-3">
+              <div className="tech-card-modern tech-card-reveal-5">
+                <div className="tech-card-border"></div>
+                <div className="tech-card-content">
+                  <div className="tech-card-icon-wrap tech-icon-bootstrap">
+                    <i className="fab fa-bootstrap"></i>
+                  </div>
+                  <span className="tech-card-name">Bootstrap</span>
+                  <span className="tech-card-desc">UI Components</span>
+                </div>
               </div>
-              <div className="tech-label">Node.js</div>
             </div>
-            <div className="col-md-2 col-4 text-center">
-              <div className="tech-icon mb-3 bg-white rounded-15 shadow-lg hover-lift p-3">
-                <i className="fas fa-database" style={{ fontSize: '2rem' }}></i>
+            <div className="col-6 col-md-4 col-lg-3">
+              <div className="tech-card-modern tech-card-reveal-6">
+                <div className="tech-card-border"></div>
+                <div className="tech-card-content">
+                  <div className="tech-card-icon-wrap tech-icon-db">
+                    <i className="fas fa-database"></i>
+                  </div>
+                  <span className="tech-card-name">Database</span>
+                  <span className="tech-card-desc">Data Storage</span>
+                </div>
               </div>
-              <div className="tech-label">Database</div>
+            </div>
+          </div>
+
+          {/* Trust indicators */}
+          <div className="tech-trust-row text-center mt-5">
+            <div className="d-flex align-items-center justify-content-center gap-2 tech-trust-text">
+              <i className="bi bi-shield-check text-success"></i>
+              <span>Enterprise-grade security &bull; SOC 2 compliant &bull; Encrypted at rest</span>
             </div>
           </div>
         </div>
