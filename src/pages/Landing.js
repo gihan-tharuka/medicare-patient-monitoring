@@ -634,20 +634,74 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section id="cta" className="py-5 bg-gradient-primary text-white position-relative overflow-hidden">
-        <div className="cta-bg-overlay"></div>
-        <div className="container text-center">
-          <h2 className="h1 fw-bold text-gradient-primary mb-3">Ready to Transform Patient Care?</h2>
-          <p className="lead mb-4" style={{ fontSize: '1.1rem', opacity: 0.9 }}>Join thousands of healthcare providers using MediSys to deliver better patient outcomes.</p>
-          <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link to="/login" className="btn btn-light btn-lg btn-gradient">
-              <i className="bi bi-box-arrow-in-right me-2"></i>
-              Login to System
-            </Link>
-            <Link to="/login" className="btn btn-outline-light btn-lg">
-              <i className="bi bi-person-plus me-2"></i>
-              Create Account
-            </Link>
+      <section id="cta" className="cta-section position-relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="cta-bg-particles">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="cta-particle" style={{
+              width: `${Math.random() * 8 + 4}px`,
+              height: `${Math.random() * 8 + 4}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 4 + 3}s`,
+            }}></div>
+          ))}
+        </div>
+        <div className="cta-glow cta-glow-1"></div>
+        <div className="cta-glow cta-glow-2"></div>
+
+        <div className="container position-relative">
+          <div className="row align-items-center justify-content-center">
+            <div className="col-lg-8 col-xl-7 text-center">
+              {/* Badge */}
+              <span className="cta-badge d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4">
+                <i className="bi bi-rocket-takeoff"></i>
+                Start Your Journey
+              </span>
+
+              {/* Heading */}
+              <h2 className="cta-heading mb-3">
+                Ready to Transform{' '}
+                <span className="cta-heading-highlight">Patient Care</span>?
+              </h2>
+
+              {/* Description */}
+              <p className="cta-desc mb-4">
+                Join thousands of healthcare providers using MediSys to deliver better patient 
+                outcomes. Get started free — no credit card required.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="d-flex gap-3 justify-content-center flex-wrap mb-4">
+                <Link to="/login" className="cta-btn-primary">
+                  <i className="bi bi-box-arrow-in-right"></i>
+                  <span>Login to System</span>
+                </Link>
+                <Link to="/login" className="cta-btn-secondary">
+                  <i className="bi bi-person-plus"></i>
+                  <span>Create Free Account</span>
+                </Link>
+              </div>
+
+              {/* Trust indicators */}
+              <div className="cta-trust d-flex align-items-center justify-content-center gap-3 flex-wrap">
+                <div className="cta-trust-item">
+                  <i className="bi bi-shield-check"></i>
+                  <span>HIPAA Compliant</span>
+                </div>
+                <div className="cta-trust-divider d-none d-sm-block"></div>
+                <div className="cta-trust-item">
+                  <i className="bi bi-clock"></i>
+                  <span>5-min Setup</span>
+                </div>
+                <div className="cta-trust-divider d-none d-sm-block"></div>
+                <div className="cta-trust-item">
+                  <i className="bi bi-headset"></i>
+                  <span>24/7 Support</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
