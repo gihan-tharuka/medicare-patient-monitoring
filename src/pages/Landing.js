@@ -196,7 +196,6 @@ const Landing = () => {
 
       {/* Features Section */}
       <section id="features" className="features-section py-5 position-relative overflow-hidden">
-        {/* Background decorative elements */}
         <div className="features-bg-shapes">
           <div className="features-bg-shape features-bg-shape-1"></div>
           <div className="features-bg-shape features-bg-shape-2"></div>
@@ -312,7 +311,6 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Additional feature indicators */}
           <div className="features-bottom-row row g-3 mt-4 justify-content-center">
             <div className="col-6 col-md-3">
               <div className="feature-pill d-flex align-items-center gap-2">
@@ -342,36 +340,152 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section id="stats" className="py-5 position-relative overflow-hidden">
-        <div className="container">
+      {/* Stats / Performance Section */}
+      <section id="stats" className="stats-section py-5 position-relative overflow-hidden">
+        <div className="stats-bg-shapes">
+          <div className="stats-bg-circle stats-bg-circle-1"></div>
+          <div className="stats-bg-circle stats-bg-circle-2"></div>
+          <div className="stats-bg-circle stats-bg-circle-3"></div>
+          <div className="stats-bg-circle stats-bg-circle-4"></div>
+        </div>
+
+        <div className="container position-relative">
           <div className="text-center mb-5">
-            <h2 className="h1 fw-bold text-gradient-primary">System Performance</h2>
-            <p className="lead text-muted" style={{ fontSize: '1.1rem' }}>Trusted by healthcare providers worldwide</p>
+            <span className="stats-badge d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3">
+              <i className="bi bi-bar-chart-line"></i>
+              Real-time Metrics
+            </span>
+            <h2 className="stats-heading display-5 fw-bold mb-3">
+              System Performance
+            </h2>
+            <p className="stats-subtitle lead mx-auto" style={{ maxWidth: '600px' }}>
+              Trusted by healthcare providers worldwide — delivering reliable, high-performance patient monitoring at scale.
+            </p>
           </div>
-          <div className="row g-4">
-            <div className="col-md-3 col-6">
-              <div className="stat-card text-center bg-white rounded-15 shadow-lg hover-lift p-4">
-                <div className="stat-number text-primary fw-bold" style={{ fontSize: '2.5rem' }}>5,000+</div>
-                <div className="stat-label text-muted" style={{ fontSize: '0.9rem' }}>Active Patients</div>
+
+          {/* Main metric cards */}
+          <div className="stats-grid">
+            <div className="stats-main-card stats-main-card-accent">
+              <div className="stats-main-inner">
+                <div className="stats-main-icon">
+                  <i className="bi bi-people"></i>
+                </div>
+                <div className="stats-main-content">
+                  <span className="stats-main-number">5,000+</span>
+                  <span className="stats-main-label">Active Patients</span>
+                  <div className="stats-main-bar">
+                    <div className="stats-main-bar-fill stats-main-bar-fill-purple" style={{ width: '92%' }}></div>
+                  </div>
+                </div>
+              </div>
+              <div className="stats-main-trend stats-main-trend-up">
+                <i className="bi bi-arrow-up-short"></i>
+                <span>+24% this quarter</span>
               </div>
             </div>
-            <div className="col-md-3 col-6">
-              <div className="stat-card text-center bg-white rounded-15 shadow-lg hover-lift p-4">
-                <div className="stat-number text-success fw-bold" style={{ fontSize: '2.5rem' }}>10,000+</div>
-                <div className="stat-label text-muted" style={{ fontSize: '0.9rem' }}>Alerts Handled</div>
+
+            <div className="stats-main-card stats-main-card-accent-2">
+              <div className="stats-main-inner">
+                <div className="stats-main-icon">
+                  <i className="bi bi-bell"></i>
+                </div>
+                <div className="stats-main-content">
+                  <span className="stats-main-number">10,000+</span>
+                  <span className="stats-main-label">Alerts Handled</span>
+                  <div className="stats-main-bar">
+                    <div className="stats-main-bar-fill stats-main-bar-fill-green" style={{ width: '96%' }}></div>
+                  </div>
+                </div>
+              </div>
+              <div className="stats-main-trend stats-main-trend-up">
+                <i className="bi bi-arrow-up-short"></i>
+                <span>+156% this quarter</span>
               </div>
             </div>
-            <div className="col-md-3 col-6">
-              <div className="stat-card text-center bg-white rounded-15 shadow-lg hover-lift p-4">
-                <div className="stat-number text-info fw-bold" style={{ fontSize: '2.5rem' }}>99.9%</div>
-                <div className="stat-label text-muted" style={{ fontSize: '0.9rem' }}>Uptime</div>
+
+            <div className="stats-main-card stats-main-card-accent-3">
+              <div className="stats-main-inner">
+                <div className="stats-main-icon">
+                  <i className="bi bi-cloud-check"></i>
+                </div>
+                <div className="stats-main-content">
+                  <span className="stats-main-number">99.9%</span>
+                  <span className="stats-main-label">Uptime SLA</span>
+                  <div className="stats-main-bar">
+                    <div className="stats-main-bar-fill stats-main-bar-fill-blue" style={{ width: '99.9%' }}></div>
+                  </div>
+                </div>
+              </div>
+              <div className="stats-main-trend stats-main-trend-neutral">
+                <i className="bi bi-dash"></i>
+                <span>Consistent</span>
               </div>
             </div>
-            <div className="col-md-3 col-6">
-              <div className="stat-card text-center bg-white rounded-15 shadow-lg hover-lift p-4">
-                <div className="stat-number text-warning fw-bold" style={{ fontSize: '2.5rem' }}>50+</div>
-                <div className="stat-label text-muted" style={{ fontSize: '0.9rem' }}>Healthcare Partners</div>
+
+            <div className="stats-main-card stats-main-card-accent-4">
+              <div className="stats-main-inner">
+                <div className="stats-main-icon">
+                  <i className="bi bi-buildings"></i>
+                </div>
+                <div className="stats-main-content">
+                  <span className="stats-main-number">50+</span>
+                  <span className="stats-main-label">Healthcare Partners</span>
+                  <div className="stats-main-bar">
+                    <div className="stats-main-bar-fill stats-main-bar-fill-orange" style={{ width: '78%' }}></div>
+                  </div>
+                </div>
+              </div>
+              <div className="stats-main-trend stats-main-trend-up">
+                <i className="bi bi-arrow-up-short"></i>
+                <span>+8 new partners</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Secondary metrics row */}
+          <div className="stats-secondary-row row g-3 mt-4 justify-content-center">
+            <div className="col-6 col-md-3">
+              <div className="stats-secondary-card">
+                <div className="stats-secondary-icon text-primary">
+                  <i className="bi bi-clock"></i>
+                </div>
+                <div className="stats-secondary-content">
+                  <span className="stats-secondary-value">{'<100ms'}</span>
+                  <span className="stats-secondary-label">Avg. Response</span>
+                </div>
+              </div>
+            </div>
+            <div className="col-6 col-md-3">
+              <div className="stats-secondary-card">
+                <div className="stats-secondary-icon text-success">
+                  <i className="bi bi-shield-check"></i>
+                </div>
+                <div className="stats-secondary-content">
+                  <span className="stats-secondary-value">HIPAA</span>
+                  <span className="stats-secondary-label">Compliant</span>
+                </div>
+              </div>
+            </div>
+            <div className="col-6 col-md-3">
+              <div className="stats-secondary-card">
+                <div className="stats-secondary-icon text-info">
+                  <i className="bi bi-globe"></i>
+                </div>
+                <div className="stats-secondary-content">
+                  <span className="stats-secondary-value">3 Regions</span>
+                  <span className="stats-secondary-label">Global Deploy</span>
+                </div>
+              </div>
+            </div>
+            <div className="col-6 col-md-3">
+              <div className="stats-secondary-card">
+                <div className="stats-secondary-icon text-warning">
+                  <i className="bi bi-cpu"></i>
+                </div>
+                <div className="stats-secondary-content">
+                  <span className="stats-secondary-value">99.97%</span>
+                  <span className="stats-secondary-label">Data Accuracy</span>
+                </div>
               </div>
             </div>
           </div>

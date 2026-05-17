@@ -768,6 +768,401 @@
 }
 
 /* ==========================================
+   Stats / Performance Section Modern Styles
+   ========================================== */
+
+.stats-section {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fc 100%);
+}
+
+/* Background decorative circles */
+.stats-bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.stats-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.12;
+}
+
+.stats-bg-circle-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #667eea, transparent);
+  top: -10%;
+  left: -10%;
+  animation: statsDrift 25s ease-in-out infinite;
+}
+
+.stats-bg-circle-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #34d399, transparent);
+  bottom: -5%;
+  right: -5%;
+  animation: statsDrift 20s ease-in-out infinite reverse;
+}
+
+.stats-bg-circle-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #f59e0b, transparent);
+  top: 30%;
+  right: 15%;
+  animation: statsDrift 22s ease-in-out infinite 3s;
+}
+
+.stats-bg-circle-4 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, #f87171, transparent);
+  bottom: 20%;
+  left: 20%;
+  animation: statsDrift 18s ease-in-out infinite 7s;
+}
+
+@keyframes statsDrift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(15px, -20px) scale(1.03);
+  }
+  50% {
+    transform: translate(-10px, 10px) scale(0.97);
+  }
+  75% {
+    transform: translate(8px, -8px) scale(1.02);
+  }
+}
+
+/* Badge */
+.stats-badge {
+  background: linear-gradient(135deg, #667eea12 0%, #764ba212 100%);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  color: #667eea;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.stats-badge i {
+  font-size: 0.85rem;
+}
+
+/* Heading */
+.stats-heading {
+  background: linear-gradient(135deg, #1a1a2e 0%, #302b63 50%, #667eea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Stats Grid Layout */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Main Metric Cards */
+.stats-main-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: statsCardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stats-main-card:nth-child(1) { animation-delay: 0.1s; }
+.stats-main-card:nth-child(2) { animation-delay: 0.2s; }
+.stats-main-card:nth-child(3) { animation-delay: 0.3s; }
+.stats-main-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes statsCardEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stats-main-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* Accent borders */
+.stats-main-card-accent {
+  border-left: 4px solid #667eea;
+}
+
+.stats-main-card-accent-2 {
+  border-left: 4px solid #34d399;
+}
+
+.stats-main-card-accent-3 {
+  border-left: 4px solid #60a5fa;
+}
+
+.stats-main-card-accent-4 {
+  border-left: 4px solid #f59e0b;
+}
+
+.stats-main-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.stats-main-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+  color: #667eea;
+  transition: all 0.3s ease;
+}
+
+.stats-main-card:nth-child(2) .stats-main-icon {
+  background: linear-gradient(135deg, #34d39910 0%, #10b98110 100%);
+  color: #10b981;
+}
+
+.stats-main-card:nth-child(3) .stats-main-icon {
+  background: linear-gradient(135deg, #60a5fa10 0%, #3b82f610 100%);
+  color: #3b82f6;
+}
+
+.stats-main-card:nth-child(4) .stats-main-icon {
+  background: linear-gradient(135deg, #f59e0b10 0%, #d9770610 100%);
+  color: #d97706;
+}
+
+.stats-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stats-main-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  line-height: 1.1;
+}
+
+.stats-main-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+  font-weight: 500;
+}
+
+/* Progress bar */
+.stats-main-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  margin-top: 0.75rem;
+  overflow: hidden;
+}
+
+.stats-main-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: barFillAnim 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  width: 0% !important;
+}
+
+.stats-main-bar-fill-purple { background: linear-gradient(90deg, #667eea, #764ba2); }
+.stats-main-bar-fill-green { background: linear-gradient(90deg, #34d399, #10b981); }
+.stats-main-bar-fill-blue { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+.stats-main-bar-fill-orange { background: linear-gradient(90deg, #f59e0b, #d97706); }
+
+@keyframes barFillAnim {
+  to {
+    width: var(--bar-width, 0%);
+  }
+}
+
+/* Trend indicator */
+.stats-main-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.stats-main-trend i {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.stats-main-trend-up {
+  color: #10b981;
+}
+
+.stats-main-trend-neutral {
+  color: #6b7280;
+}
+
+/* --- Secondary Metrics Cards --- */
+.stats-secondary-row {
+  position: relative;
+  z-index: 1;
+}
+
+.stats-secondary-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: statsSecondaryEnter 0.5s ease-out forwards;
+}
+
+.stats-secondary-card:nth-child(1) { animation-delay: 0.5s; }
+.stats-secondary-card:nth-child(2) { animation-delay: 0.6s; }
+.stats-secondary-card:nth-child(3) { animation-delay: 0.7s; }
+.stats-secondary-card:nth-child(4) { animation-delay: 0.8s; }
+
+@keyframes statsSecondaryEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stats-secondary-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(102, 126, 234, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.stats-secondary-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.stats-secondary-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-secondary-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.2;
+}
+
+.stats-secondary-label {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Stats responsive */
+@media (max-width: 767.98px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .stats-main-number {
+    font-size: 1.3rem;
+  }
+
+  .stats-secondary-card {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .stats-main-inner {
+    flex-direction: column;
+  }
+
+  .stats-main-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .stats-secondary-value {
+    font-size: 0.8rem;
+  }
+
+  .stats-secondary-label {
+    font-size: 0.6rem;
+  }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .stats-main-card,
+  .stats-secondary-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .stats-main-bar-fill {
+    animation: none;
+  }
+
+  .stats-bg-circle {
+    animation: none;
+  }
+}
+
+/* ==========================================
    Features Section Modern Styles
    ========================================== */
 
