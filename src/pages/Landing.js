@@ -524,7 +524,7 @@ const Landing = () => {
                 <div className="tech-card-border"></div>
                 <div className="tech-card-content">
                   <div className="tech-card-icon-wrap tech-icon-react">
-                    <i className="fab fa-react"></i>
+                    <img src="/images/technologies/React-icon.svg.png" alt="React" className="tech-logo" />
                   </div>
                   <span className="tech-card-name">React</span>
                   <span className="tech-card-desc">UI Framework</span>
@@ -536,7 +536,7 @@ const Landing = () => {
                 <div className="tech-card-border"></div>
                 <div className="tech-card-content">
                   <div className="tech-card-icon-wrap tech-icon-aws">
-                    <i className="fab fa-aws"></i>
+                    <img src="/images/technologies/Amazon_Web_Services_Logo.svg.png" alt="AWS" className="tech-logo" />
                   </div>
                   <span className="tech-card-name">AWS</span>
                   <span className="tech-card-desc">Cloud Infrastructure</span>
@@ -548,7 +548,7 @@ const Landing = () => {
                 <div className="tech-card-border"></div>
                 <div className="tech-card-content">
                   <div className="tech-card-icon-wrap tech-icon-node">
-                    <i className="fab fa-node-js"></i>
+                    <img src="/images/technologies/nodejs-logo.svg" alt="Node.js" className="tech-logo" />
                   </div>
                   <span className="tech-card-name">Node.js</span>
                   <span className="tech-card-desc">Runtime Engine</span>
@@ -567,7 +567,7 @@ const Landing = () => {
                 <div className="tech-card-border"></div>
                 <div className="tech-card-content">
                   <div className="tech-card-icon-wrap tech-icon-chart">
-                    <i className="fas fa-chart-line"></i>
+                    <img src="/images/technologies/Chart.js_logo.svg.png" alt="Chart.js" className="tech-logo" />
                   </div>
                   <span className="tech-card-name">Chart.js</span>
                   <span className="tech-card-desc">Data Visualization</span>
@@ -579,7 +579,7 @@ const Landing = () => {
                 <div className="tech-card-border"></div>
                 <div className="tech-card-content">
                   <div className="tech-card-icon-wrap tech-icon-bootstrap">
-                    <i className="fab fa-bootstrap"></i>
+                    <img src="/images/technologies/Bootstrap_logo.svg.png" alt="Bootstrap" className="tech-logo" />
                   </div>
                   <span className="tech-card-name">Bootstrap</span>
                   <span className="tech-card-desc">UI Components</span>
@@ -591,9 +591,9 @@ const Landing = () => {
                 <div className="tech-card-border"></div>
                 <div className="tech-card-content">
                   <div className="tech-card-icon-wrap tech-icon-db">
-                    <i className="fas fa-database"></i>
+                    <img src="/images/technologies/DynamoDB.png" alt="DynamoDB" className="tech-logo" />
                   </div>
-                  <span className="tech-card-name">Database</span>
+                  <span className="tech-card-name">DynamoDB</span>
                   <span className="tech-card-desc">Data Storage</span>
                 </div>
               </div>
@@ -630,15 +630,116 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-dark text-white py-4">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              <h5>MediSys Patient Monitoring</h5>
-              <p className="text-muted">Advanced healthcare solutions for better patient outcomes.</p>
+      <footer className="footer-section position-relative overflow-hidden">
+        {/* Background gradient overlay */}
+        <div className="footer-bg-gradient"></div>
+
+        <div className="container position-relative">
+          {/* Main footer content */}
+          <div className="footer-grid">
+            {/* Brand column */}
+            <div className="footer-col footer-brand-col">
+              <div className="footer-logo d-flex align-items-center gap-2 mb-3">
+                <div className="footer-logo-icon">
+                  <i className="bi bi-heart-pulse"></i>
+                </div>
+                <span className="footer-logo-text">MediSys</span>
+              </div>
+              <p className="footer-desc">
+                Advanced patient monitoring platform delivering real-time insights and 
+                intelligent analytics for better healthcare outcomes.
+              </p>
+              <div className="footer-social d-flex gap-2">
+                <a href="#!" className="footer-social-link" aria-label="Twitter">
+                  <i className="bi bi-twitter-x"></i>
+                </a>
+                <a href="#!" className="footer-social-link" aria-label="LinkedIn">
+                  <i className="bi bi-linkedin"></i>
+                </a>
+                <a href="#!" className="footer-social-link" aria-label="GitHub">
+                  <i className="bi bi-github"></i>
+                </a>
+                <a href="#!" className="footer-social-link" aria-label="YouTube">
+                  <i className="bi bi-youtube"></i>
+                </a>
+              </div>
             </div>
-            <div className="col-md-6 text-md-end">
-              <p className="mb-0">&copy; 2024 MediSys. All rights reserved.</p>
+
+            {/* Product column */}
+            <div className="footer-col">
+              <h5 className="footer-col-title">Product</h5>
+              <ul className="footer-links">
+                <li><a href="#features" className="footer-link">Features</a></li>
+                <li><a href="#stats" className="footer-link">Performance</a></li>
+                <li><a href="#tech" className="footer-link">Technology</a></li>
+                <li><Link to="/login" className="footer-link">Dashboard Demo</Link></li>
+                <li><a href="#!" className="footer-link">API Documentation</a></li>
+              </ul>
+            </div>
+
+            {/* Company column */}
+            <div className="footer-col">
+              <h5 className="footer-col-title">Company</h5>
+              <ul className="footer-links">
+                <li><a href="#!" className="footer-link">About Us</a></li>
+                <li><a href="#!" className="footer-link">Careers</a></li>
+                <li><a href="#!" className="footer-link">Blog</a></li>
+                <li><a href="#!" className="footer-link">Press Kit</a></li>
+                <li><a href="#!" className="footer-link">Contact</a></li>
+              </ul>
+            </div>
+
+            {/* Resources column */}
+            <div className="footer-col">
+              <h5 className="footer-col-title">Resources</h5>
+              <ul className="footer-links">
+                <li><a href="#!" className="footer-link">Documentation</a></li>
+                <li><a href="#!" className="footer-link">Help Center</a></li>
+                <li><a href="#!" className="footer-link">Community</a></li>
+                <li><a href="#!" className="footer-link">Status Page</a></li>
+                <li><a href="#!" className="footer-link">Release Notes</a></li>
+              </ul>
+            </div>
+
+            {/* Newsletter column */}
+            <div className="footer-col footer-newsletter-col">
+              <h5 className="footer-col-title">Stay Updated</h5>
+              <p className="footer-newsletter-desc">
+                Get the latest product updates and healthcare insights delivered to your inbox.
+              </p>
+              <form className="footer-newsletter-form" onSubmit={(e) => e.preventDefault()}>
+                <div className="footer-input-group">
+                  <i className="bi bi-envelope footer-input-icon"></i>
+                  <input
+                    type="email"
+                    className="footer-input"
+                    placeholder="Enter your email"
+                    aria-label="Email for newsletter"
+                  />
+                  <button type="submit" className="footer-subscribe-btn" aria-label="Subscribe">
+                    <i className="bi bi-arrow-right"></i>
+                  </button>
+                </div>
+              </form>
+              <p className="footer-newsletter-note">
+                <i className="bi bi-shield-check me-1"></i>
+                No spam. Unsubscribe anytime.
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="footer-bottom">
+            <div className="footer-bottom-content">
+              <p className="footer-copyright">
+                &copy; {new Date().getFullYear()} MediSys. All rights reserved.
+              </p>
+              <div className="footer-bottom-links">
+                <a href="#!" className="footer-bottom-link">Privacy Policy</a>
+                <a href="#!" className="footer-bottom-link">Terms of Service</a>
+                <a href="#!" className="footer-bottom-link">Cookie Policy</a>
+                <a href="#!" className="footer-bottom-link">HIPAA Compliance</a>
+              </div>
             </div>
           </div>
         </div>
