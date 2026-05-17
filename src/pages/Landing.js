@@ -4,37 +4,60 @@ import { Link } from 'react-router-dom';
 const Landing = () => {
   return (
     <div className="min-vh-100 d-flex flex-column overflow-hidden">
-      {/* Navigation Bar - Glassmorphism */}
-      <nav className="navbar navbar-hero navbar-expand-lg navbar-dark sticky-top">
+      {/* Navigation Bar - Enhanced Glassmorphism */}
+      <nav className="navbar navbar-hero navbar-expand-lg navbar-dark sticky-top" id="mainNav">
         <div className="container">
           <Link to="/" className="navbar-brand fw-bold d-flex align-items-center gap-2">
-            <i className="bi bi-heart-pulse"></i>
-            MediSys
+            <span className="navbar-brand-icon">
+              <i className="bi bi-heart-pulse"></i>
+            </span>
+            <span className="navbar-brand-text">MediSys</span>
           </Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span className="navbar-toggler-icon"></span>
-          </button>
+          <div className="d-flex align-items-center gap-2 order-lg-last">
+            <Link to="/login" className="navbar-cta-btn d-none d-lg-inline-flex">
+              <i className="bi bi-box-arrow-in-right"></i>
+              <span>Login</span>
+            </Link>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+              <span className="navbar-toggler-line"></span>
+              <span className="navbar-toggler-line"></span>
+              <span className="navbar-toggler-line"></span>
+            </button>
+          </div>
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
+            <ul className="navbar-nav mx-auto">
               <li className="nav-item">
-                <Link to="/" className="nav-link active">Home</Link>
+                <Link to="/" className="nav-link active">
+                  <span className="nav-link-text">Home</span>
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/login" className="nav-link">Login</Link>
+                <a href="#features" className="nav-link">
+                  <span className="nav-link-text">Features</span>
+                </a>
               </li>
               <li className="nav-item">
-                <a href="#features" className="nav-link">Features</a>
+                <a href="#stats" className="nav-link">
+                  <span className="nav-link-text">Performance</span>
+                </a>
               </li>
               <li className="nav-item">
-                <a href="#stats" className="nav-link">Performance</a>
+                <a href="#tech" className="nav-link">
+                  <span className="nav-link-text">Technology</span>
+                </a>
               </li>
               <li className="nav-item">
-                <a href="#tech" className="nav-link">Technology</a>
-              </li>
-              <li className="nav-item">
-                <a href="#cta" className="nav-link">Get Started</a>
+                <a href="#cta" className="nav-link">
+                  <span className="nav-link-text">Get Started</span>
+                </a>
               </li>
             </ul>
+            <div className="navbar-mobile-cta d-lg-none mt-3 pt-3 border-top border-white border-opacity-10">
+              <Link to="/login" className="navbar-cta-btn-mobile w-100">
+                <i className="bi bi-box-arrow-in-right"></i>
+                <span>Login to Dashboard</span>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
